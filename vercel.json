@@ -1,14 +1,6 @@
 {
   "buildCommand": "",
   "outputDirectory": "public",
-  "functions": {
-    "api/openai.js": {
-      "runtime": "edge"
-    },
-    "api/mapbox.js": {
-      "runtime": "edge"
-    }
-  },
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/(.*)", "dest": "/$1" }
