@@ -212,8 +212,7 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
   .nav-logo{display:block;position:fixed;top:10px;left:12px;z-index:300}
   .nav-logo img{height:24px}
   .nav-links{gap:0;flex:1;justify-content:space-around}
-  .nav-link{font-size:0.62rem;letter-spacing:0.04em;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px}
-  .nav-icon{display:block;font-size:1.3rem}
+  .nav-link{font-size:0.62rem;letter-spacing:0.04em;padding:8px 12px;display:flex;flex-direction:column;align-items:center;gap:2px}
   .lang-sel{position:fixed;bottom:68px;right:12px;z-index:300;gap:3px;background:rgba(26,46,10,0.92);backdrop-filter:blur(12px);padding:4px 6px;border-radius:20px}
   .lang-btn{font-size:0.6rem;padding:3px 6px;border-radius:4px}
   
@@ -352,10 +351,10 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
 <nav class="nav">
   <div class="nav-logo" onclick="adminTap()"><img src="https://www.vivaicintoli.com/content/images/thumbs/0072118.png" alt="Vivai Cintoli"></div>
   <div class="nav-links">
-    <span class="nav-link on" onclick="go('home')"><span class="nav-icon">🏠</span>Home</span>
-    <span class="nav-link" onclick="go('catalog')"><span class="nav-icon">🌿</span>Catalogo</span>
-    <span class="nav-link" onclick="go('ai')"><span class="nav-icon">🤖</span>Flora</span>
-    <span class="nav-link" onclick="go('quote')"><span class="nav-icon">📋</span>Preventivo</span>
+    <span class="nav-link on" onclick="go('home')">Home</span>
+    <span class="nav-link" onclick="go('catalog')">Catalogo</span>
+    <span class="nav-link" onclick="go('ai')">Flora</span>
+    <span class="nav-link" onclick="go('quote')">Preventivo</span>
   </div>
   <div class="lang-sel">
     <button class="lang-btn on" onclick="setLang('it')">IT</button>
@@ -396,6 +395,9 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
       <h2 class="cat-title" id="cat-title">Le nostre <em>piante</em></h2>
     </div>
     <div class="filters" id="filters"></div>
+    <div id="cat-search-wrap" style="margin-bottom:16px">
+      <input id="cat-search" class="form-input" type="search" placeholder="🔍 Cerca per nome o nome scientifico..." style="border-radius:24px;font-size:0.88rem;padding:10px 18px" oninput="catSearch=this.value;renderCatalog()">
+    </div>
     <div class="pgrid" id="pgrid"></div>
   </div>
 </div>
@@ -658,6 +660,7 @@ var WA = '393516715669';
 var lang = 'it';
 var curPage = 'home';
 var curFilter = 'all';
+var catSearch = '';
 var quoteSelected = {};
 var quoteData = {};
 
@@ -871,9 +874,7 @@ function setLang(l) {
   var navLinks = document.querySelectorAll('.nav-link');
   var navKeys = ['nav_home','nav_cat','nav_ai','nav_quote'];
   navLinks.forEach(function(link,i){
-    var icon = link.querySelector('.nav-icon');
-    var iconHTML = icon ? icon.outerHTML : '';
-    link.innerHTML = iconHTML + tr(navKeys[i]);
+    link.textContent = tr(navKeys[i]);
   });
   renderCatalog();
   if(curPage==='quote') renderQuote();
@@ -913,6 +914,12 @@ function renderCatalog() {
   var grid = document.getElementById('pgrid');
   grid.innerHTML = '';
   var filtered = curFilter==='all' ? PLANTS : PLANTS.filter(function(p){return p.cat===curFilter});
+  if(catSearch.trim()){
+    var s = catSearch.toLowerCase().trim();
+    filtered = filtered.filter(function(p){
+      return p.name.toLowerCase().indexOf(s)>-1 || p.sci.toLowerCase().indexOf(s)>-1;
+    });
+  }
   
   filtered.forEach(function(p) {
     var card = document.createElement('div');
