@@ -1,93 +1,109 @@
-export const config = { runtime: 'edge' };
+// Node.js runtime — needed for longer timeout (image generation can take 30-60s)
+// Edge runtime has a 25s hard limit which is too short for OpenAI image edits
 
-export default async function handler(req) {
+export const config = {
+  maxDuration: 120, // seconds — requires Vercel Pro, falls back to 60s on Hobby
+};
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'POST only' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(405).json({ error: 'POST only' });
   }
 
   const key = process.env.OPENAI_KEY;
   if (!key) {
-    return new Response(JSON.stringify({ error: 'OPENAI_KEY not configured' }), {
-      status: 503,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(503).json({ error: 'OPENAI_KEY not configured' });
   }
 
+  let body;
   try {
-    const { image, prompt } = await req.json();
+    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  } catch {
+    return res.status(400).json({ error: 'Invalid JSON body' });
+  }
 
-    // Extract base64 data from data URL
-    const base64Match = image.match(/^data:(.+?);base64,(.+)$/);
-    if (!base64Match) {
-      return new Response(JSON.stringify({ error: 'Invalid image format' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-    const mimeType = base64Match[1];
-    const imgBase64 = base64Match[2];
+  const { image, prompt } = body || {};
 
-    // Convert base64 to binary for multipart/form-data
-    const binaryStr = atob(imgBase64);
-    const bytes = new Uint8Array(binaryStr.length);
-    for (let i = 0; i < binaryStr.length; i++) {
-      bytes[i] = binaryStr.charCodeAt(i);
-    }
-    const blob = new Blob([bytes], { type: mimeType });
+  if (!image || !prompt) {
+    return res.status(400).json({ error: 'Missing image or prompt' });
+  }
 
-    // Build multipart/form-data — required for gpt-image-2 edits
-    const form = new FormData();
-    form.append('model', 'gpt-image-2');
-    form.append('image[]', blob, 'image.jpg');
-    form.append('prompt', prompt);
-    form.append('n', '1');
-    form.append('size', '1024x1024');
+  // Extract base64 from data URL
+  const base64Match = image.match(/^data:(.+?);base64,(.+)$/);
+  if (!base64Match) {
+    return res.status(400).json({ error: 'Invalid image format' });
+  }
+
+  const mimeType = base64Match[1];
+  const imgBase64 = base64Match[2];
+
+  try {
+    // Convert base64 to Buffer
+    const imgBuffer = Buffer.from(imgBase64, 'base64');
+
+    // Build multipart/form-data manually using boundary
+    const boundary = '----FormBoundary' + Math.random().toString(36).slice(2);
+
+    const parts = [];
+
+    // model field
+    parts.push(
+      `--${boundary}\r\nContent-Disposition: form-data; name="model"\r\n\r\ngpt-image-2`
+    );
+
+    // prompt field
+    parts.push(
+      `--${boundary}\r\nContent-Disposition: form-data; name="prompt"\r\n\r\n${prompt}`
+    );
+
+    // n field
+    parts.push(
+      `--${boundary}\r\nContent-Disposition: form-data; name="n"\r\n\r\n1`
+    );
+
+    // size field
+    parts.push(
+      `--${boundary}\r\nContent-Disposition: form-data; name="size"\r\n\r\n1024x1024`
+    );
+
+    // image[] file field
+    const imgHeader = `--${boundary}\r\nContent-Disposition: form-data; name="image[]"; filename="image.jpg"\r\nContent-Type: ${mimeType}\r\n\r\n`;
+    const imgFooter = `\r\n--${boundary}--\r\n`;
+
+    const headerBuf = Buffer.from(parts.join('\r\n') + '\r\n' + imgHeader, 'utf8');
+    const footerBuf = Buffer.from(imgFooter, 'utf8');
+    const formBody = Buffer.concat([headerBuf, imgBuffer, footerBuf]);
 
     const openaiRes = await fetch('https://api.openai.com/v1/images/edits', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${key}`,
-        // Do NOT set Content-Type — fetch sets it automatically with boundary for FormData
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': String(formBody.length),
       },
-      body: form,
+      body: formBody,
     });
-
-    if (!openaiRes.ok) {
-      const err = await openaiRes.json().catch(() => ({}));
-      return new Response(JSON.stringify({
-        error: err.error?.message || 'OpenAI API error',
-      }), {
-        status: openaiRes.status,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
 
     const data = await openaiRes.json();
 
-    const b64 = data.data?.[0]?.b64_json;
-    if (!b64) {
-      return new Response(JSON.stringify({ error: 'No image generated' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
+    if (!openaiRes.ok) {
+      console.error('OpenAI error:', data);
+      return res.status(openaiRes.status).json({
+        error: data.error?.message || 'OpenAI API error',
       });
     }
 
-    return new Response(JSON.stringify({
+    const b64 = data.data?.[0]?.b64_json;
+    if (!b64) {
+      return res.status(500).json({ error: 'No image in response' });
+    }
+
+    return res.status(200).json({
       image: `data:image/png;base64,${b64}`,
-    }), {
-      headers: { 'Content-Type': 'application/json' },
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({
-      error: 'Proxy error',
-      detail: err.message,
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    console.error('Proxy error:', err);
+    return res.status(500).json({ error: 'Proxy error', detail: err.message });
   }
 }

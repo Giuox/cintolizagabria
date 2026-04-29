@@ -1,32 +1,20 @@
-export const config = { runtime: 'edge' };
-
-export default async function handler(req) {
+export default async function handler(req, res) {
   const token = process.env.MAPBOX_TOKEN;
   if (!token) {
-    return new Response(JSON.stringify({ error: 'MAPBOX_TOKEN not configured' }), {
-      status: 503,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return res.status(503).json({ error: 'MAPBOX_TOKEN not configured' });
   }
 
-  const url = new URL(req.url, 'http://localhost');
-  const geocode = url.searchParams.get('geocode');
+  const { geocode } = req.query || {};
 
   // Geocoding proxy
   if (geocode) {
     const mbUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(geocode)}.json?access_token=${token}&limit=1`;
     const mbRes = await fetch(mbUrl);
     const data = await mbRes.json();
-    return new Response(JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=3600',
-      },
-    });
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    return res.status(200).json(data);
   }
 
   // Token request (for mapbox-gl-js init)
-  return new Response(JSON.stringify({ token }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return res.status(200).json({ token });
 }
