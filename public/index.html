@@ -34,7 +34,7 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
 
 /* HERO */
 .hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;padding-top:56px}
-.hero-bg{position:absolute;inset:0;background:url('/api/img?src=https%3A%2F%2Fwww.vivaicintoli.com%2Fcontent%2Fimages%2Fthumbs%2F0055795.jpeg') center/cover;animation:hz 25s ease-in-out infinite alternate}
+.hero-bg{position:absolute;inset:0;background:url('https://www.vivaicintoli.com/content/images/thumbs/0055795.jpeg') center/cover;animation:hz 25s ease-in-out infinite alternate}
 @keyframes hz{0%{transform:scale(1.05)}100%{transform:scale(1.15)}}
 .hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,46,10,0.92) 0%,rgba(26,46,10,0.4) 50%,rgba(26,46,10,0.15) 100%)}
 .hero-c{position:relative;z-index:2;padding:0 32px 80px;width:100%;max-width:800px}
@@ -350,7 +350,7 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo" onclick="adminTap()"><img src="/api/img?src=https%3A%2F%2Fwww.vivaicintoli.com%2Fcontent%2Fimages%2Fthumbs%2F0072118.png" alt="Vivai Cintoli"></div>
+  <div class="nav-logo" onclick="adminTap()"><img src="https://www.vivaicintoli.com/content/images/thumbs/0072118.png" alt="Vivai Cintoli"></div>
   <div class="nav-links">
     <span class="nav-link on" onclick="go('home')"><span class="nav-icon">🏠</span>Home</span>
     <span class="nav-link" onclick="go('catalog')"><span class="nav-icon">🌿</span>Catalogo</span>
@@ -417,7 +417,7 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
     <!-- CHAT PANEL -->
     <div id="flora-chat" class="chatbox">
       <div class="chat-bar">
-        <div class="chat-av"><img src="/api/img?src=https%3A%2F%2Fwww.vivaicintoli.com%2Fcontent%2Fimages%2Fthumbs%2F0072118.png" alt=""></div>
+        <div class="chat-av"><img src="https://www.vivaicintoli.com/content/images/thumbs/0072118.png" alt=""></div>
         <div>
           <div class="chat-av-name">Flora &mdash; Vivai Cintoli</div>
           <div class="chat-av-status"><div class="sdot"></div> Online</div>
@@ -633,10 +633,7 @@ var _FALLBACK = [
 ];
 
 function _expandEntry(e) {
-  var rawImg = e.m || '';
-  var img = rawImg
-    ? '/api/img?src=' + encodeURIComponent(rawImg)
-    : '';
+  var img = e.m || '';
   return {id:e.i, name:e.n, sci:e.s, cat:e.c, qty:e.q, sku:e.k,
     img:img, avail:e.q>0?'available':'soon'};
 }
