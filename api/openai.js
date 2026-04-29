@@ -30,20 +30,29 @@ export default async function handler(req) {
     const mimeType = base64Match[1];
     const imgBase64 = base64Match[2];
 
-    // Call OpenAI gpt-image-1 for image editing
+    // Convert base64 to binary for multipart/form-data
+    const binaryStr = atob(imgBase64);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+      bytes[i] = binaryStr.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: mimeType });
+
+    // Build multipart/form-data — required for gpt-image-2 edits
+    const form = new FormData();
+    form.append('model', 'gpt-image-2');
+    form.append('image[]', blob, 'image.jpg');
+    form.append('prompt', prompt);
+    form.append('n', '1');
+    form.append('size', '1024x1024');
+
     const openaiRes = await fetch('https://api.openai.com/v1/images/edits', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json',
+        // Do NOT set Content-Type — fetch sets it automatically with boundary for FormData
       },
-      body: JSON.stringify({
-        model: 'gpt-image-2',
-        image: imgBase64,
-        prompt: prompt,
-        n: 1,
-        size: '1024x1024',
-      }),
+      body: form,
     });
 
     if (!openaiRes.ok) {
@@ -58,7 +67,6 @@ export default async function handler(req) {
 
     const data = await openaiRes.json();
 
-    // gpt-image-1 returns base64 in data[0].b64_json
     const b64 = data.data?.[0]?.b64_json;
     if (!b64) {
       return new Response(JSON.stringify({ error: 'No image generated' }), {
