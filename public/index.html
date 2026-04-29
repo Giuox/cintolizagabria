@@ -964,12 +964,14 @@ var quoteCatFilter = 'all';
 function addToQuote(id){
   quoteSelected[id] = true;
   if(!quoteData[id]) quoteData[id] = {qty:1,note:''};
+  saveQuoteToStorage();
   if(curPage==='quote') renderQuote();
 }
 
 function removeFromQuote(id){
   delete quoteSelected[id];
   delete quoteData[id];
+  saveQuoteToStorage();
   renderQuote();
 }
 
@@ -1170,8 +1172,18 @@ function renderQuote() {
 
     // Send buttons
     html += '<a class="btn btn-verde" href="https://wa.me/'+WA+'?text='+encodeURIComponent(buildWAMsg())+'" target="_blank" style="width:100%;justify-content:center;border-radius:10px;margin-bottom:10px;padding:16px">'+tr('q_send_wa')+'</a>';
-    html += '<button class="btn btn-ghost" onclick="emailQuote()" style="width:100%;justify-content:center;border-radius:10px;color:var(--testo);border-color:var(--sabbia2);padding:16px">'+tr('q_send_email')+'</button>';
-    html += '<button class="btn btn-ghost" onclick="generatePDF()" style="width:100%;justify-content:center;border-radius:10px;color:var(--verde);border-color:var(--verde);padding:16px;margin-top:10px">📄 Genera PDF Preventivo</button>';
+    html += '<button class="btn btn-terra" onclick="sendQuoteEmail()" style="width:100%;justify-content:center;border-radius:10px;padding:16px;margin-bottom:10px" id="btn-send-email">✉️ Invia preventivo a Vivai Cintoli</button>';
+    html += '<div style="display:flex;gap:8px;margin-bottom:10px">'
+      +'<button class="btn btn-ghost" onclick="generatePDF()" style="flex:1;justify-content:center;border-radius:10px;color:var(--verde);border-color:var(--verde);padding:14px">📄 PDF</button>'
+      +'<button class="btn btn-ghost" onclick="shareQuoteLink()" style="flex:1;justify-content:center;border-radius:10px;color:var(--testo2);border-color:var(--sabbia2);padding:14px" id="btn-share">🔗 Condividi link</button>'
+      +'</div>';
+    html += '<div id="share-link-box" style="display:none;background:var(--sabbia);border-radius:10px;padding:12px;margin-bottom:10px">'
+      +'<div style="font-size:0.7rem;font-weight:600;color:var(--verde);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em">Link preventivo</div>'
+      +'<div style="display:flex;gap:8px;align-items:center">'
+      +'<input id="share-link-input" readonly style="flex:1;font-size:0.75rem;padding:8px 10px;border:1px solid var(--sabbia2);border-radius:6px;background:#fff;color:var(--testo);font-family:var(--body)" value="">'
+      +'<button onclick="copyShareLink()" style="padding:8px 14px;background:var(--verde);color:#fff;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:var(--body);font-weight:600" id="btn-copy">Copia</button>'
+      +'</div></div>'
+      +'<div id="email-status" style="display:none;text-align:center;padding:10px;border-radius:8px;font-size:0.82rem;margin-bottom:8px"></div>';
     
     div.innerHTML = html;
     ws.appendChild(div);
@@ -1246,6 +1258,155 @@ function emailQuote() {
   var body = encodeURIComponent(buildWAMsg().replace(/\*/g,''));
   window.open('mailto:vivaicintolisrl@gmail.com?subject='+subject+'&body='+body);
 }
+
+/* ── Send quote via Resend API ── */
+async function sendQuoteEmail() {
+  var btn = document.getElementById('btn-send-email');
+  var status = document.getElementById('email-status');
+  if (!btn || !status) return;
+
+  var selIds = Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]});
+  if (selIds.length === 0) return;
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Invio in corso...';
+
+  var plants = selIds.map(function(id) {
+    var p = PLANTS.find(function(x){return x.id===id});
+    var d = quoteData[id]||{qty:1,note:''};
+    return { name:p.name, sci:p.sci, qty:d.qty, note:d.note||'', stock:p.qty>0?p.qty+' disp.':'esaurito' };
+  });
+
+  var client = {
+    name:    (document.getElementById('qname')    ||{}).value||'',
+    company: (document.getElementById('qcompany') ||{}).value||'',
+    vat:     (document.getElementById('qvat')     ||{}).value||'',
+    email:   (document.getElementById('qemail')   ||{}).value||'',
+    phone:   (document.getElementById('qphone')   ||{}).value||'',
+    country: (document.getElementById('qcountry') ||{}).value||'',
+    notes:   (document.getElementById('qnotes')   ||{}).value||'',
+  };
+
+  try {
+    var res = await fetch('/api/quote', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ client, plants, lang }),
+    });
+    var data = await res.json();
+    if (res.ok && data.ok) {
+      status.style.display = 'block';
+      status.style.background = '#D1FAE5';
+      status.style.color = '#065F46';
+      status.textContent = '✅ Preventivo inviato con successo a Vivai Cintoli!';
+      btn.textContent = '✅ Inviato';
+    } else {
+      throw new Error(data.error || 'Errore invio');
+    }
+  } catch(e) {
+    status.style.display = 'block';
+    status.style.background = '#FEE2E2';
+    status.style.color = '#991B1B';
+    status.textContent = '❌ Errore: ' + e.message + '. Usa WhatsApp o Email.';
+    btn.disabled = false;
+    btn.textContent = '✉️ Invia preventivo a Vivai Cintoli';
+  }
+}
+
+/* ── Share quote via URL ── */
+function shareQuoteLink() {
+  var box = document.getElementById('share-link-box');
+  var input = document.getElementById('share-link-input');
+  if (!box || !input) return;
+
+  var payload = {
+    s: quoteSelected,
+    d: quoteData,
+    c: {
+      name:    (document.getElementById('qname')    ||{}).value||'',
+      company: (document.getElementById('qcompany') ||{}).value||'',
+      email:   (document.getElementById('qemail')   ||{}).value||'',
+      phone:   (document.getElementById('qphone')   ||{}).value||'',
+      country: (document.getElementById('qcountry') ||{}).value||'',
+      notes:   (document.getElementById('qnotes')   ||{}).value||'',
+    }
+  };
+
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  var url = location.origin + location.pathname + '?q=' + encoded + '#quote';
+  input.value = url;
+  box.style.display = 'block';
+}
+
+function copyShareLink() {
+  var input = document.getElementById('share-link-input');
+  var btn = document.getElementById('btn-copy');
+  if (!input) return;
+  navigator.clipboard.writeText(input.value).then(function() {
+    btn.textContent = '✓ Copiato!';
+    btn.style.background = '#065F46';
+    setTimeout(function(){ btn.textContent='Copia'; btn.style.background='var(--verde)'; }, 2000);
+  }).catch(function() {
+    input.select();
+    document.execCommand('copy');
+  });
+}
+
+/* ── Restore quote from URL param ── */
+(function restoreFromURL() {
+  try {
+    var params = new URLSearchParams(location.search);
+    var q = params.get('q');
+    if (!q) return;
+    var payload = JSON.parse(decodeURIComponent(escape(atob(q))));
+    if (payload.s) quoteSelected = payload.s;
+    if (payload.d) quoteData = payload.d;
+    if (payload.c) {
+      // Fill form fields after DOM is ready
+      var fill = function() {
+        var map = {qname:'name',qcompany:'company',qemail:'email',qphone:'phone',qcountry:'country',qnotes:'notes'};
+        Object.keys(map).forEach(function(id){
+          var el = document.getElementById(id);
+          if (el && payload.c[map[id]]) el.value = payload.c[map[id]];
+        });
+      };
+      // Delay to ensure wizard renders first
+      setTimeout(fill, 500);
+    }
+    // Navigate to quote page
+    go('quote');
+    // Jump to step 4 summary
+    setTimeout(function(){ wizStep=4; renderQuote(); }, 300);
+    // Clean URL
+    history.replaceState(null,'',location.pathname);
+  } catch(e) {}
+})();
+
+/* ── Auto-save quote to localStorage ── */
+function saveQuoteToStorage() {
+  try {
+    localStorage.setItem('cintoli_quote', JSON.stringify({
+      selected: quoteSelected,
+      data: quoteData,
+      ts: Date.now()
+    }));
+  } catch(e) {}
+}
+
+(function loadQuoteFromStorage() {
+  try {
+    var raw = localStorage.getItem('cintoli_quote');
+    if (!raw) return;
+    var saved = JSON.parse(raw);
+    // Expire after 7 days
+    if (Date.now() - saved.ts > 7 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem('cintoli_quote');
+      return;
+    }
+    if (saved.selected) quoteSelected = saved.selected;
+    if (saved.data) quoteData = saved.data;
+  } catch(e) {}
+})();
 
 function generatePDF() {
   var selIds = Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]});
