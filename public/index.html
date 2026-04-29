@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1a2e0a">
+<title>Vivai Cintoli — Zagreb 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#4A5D23;--verde2:#3A4A1B;--verde3:#1a2e0a;
+  --terra:#C4623A;--terra2:#a84e2a;
+  --crema:#FAF7F2;--sabbia:#F5EDE0;--sabbia2:#E8DCC8;
+  --oro:#D4B566;--oro2:#B8963E;
+  --testo:#2C2C2C;--testo2:#4A4A4A;
+  --font:'Cormorant Garamond',Georgia,serif;
+  --body:'DM Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,46,10,0.95);backdrop-filter:blur(20px);padding:0 140px 0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo img{height:32px;filter:brightness(10)}
+.nav-links{display:flex;gap:20px;align-items:center}
+.nav-link{color:rgba(255,255,255,0.7);text-decoration:none;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:color 0.2s}
+.nav-link:hover,.nav-link.on{color:var(--oro)}
+.nav-icon{display:none;font-size:1.2rem}
+.lang-sel{display:flex;gap:4px;position:fixed;top:14px;right:24px;z-index:100}
+.lang-btn{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-size:0.65rem;padding:4px 8px;cursor:pointer;font-family:var(--body);transition:all 0.2s}
+.lang-btn.on{background:var(--oro);color:var(--verde3);border-color:var(--oro)}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;padding-top:56px}
+.hero-bg{position:absolute;inset:0;background:url('https://www.vivaicintoli.com/content/images/thumbs/0055795.jpeg') center/cover;animation:hz 25s ease-in-out infinite alternate}
+@keyframes hz{0%{transform:scale(1.05)}100%{transform:scale(1.15)}}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,46,10,0.92) 0%,rgba(26,46,10,0.4) 50%,rgba(26,46,10,0.15) 100%)}
+.hero-c{position:relative;z-index:2;padding:0 32px 80px;width:100%;max-width:800px}
+.hero-eye{font-size:0.68rem;font-weight:600;letter-spacing:0.3em;text-transform:uppercase;color:var(--oro);margin-bottom:16px;opacity:0;animation:fu 0.8s 0.3s ease forwards}
+.hero-h1{font-family:var(--font);font-size:clamp(2.4rem,6vw,4rem);font-weight:300;line-height:1.08;color:#fff;margin-bottom:20px;opacity:0;animation:fu 0.8s 0.5s ease forwards}
+.hero-h1 em{color:var(--oro);font-style:italic}
+.hero-d{font-size:0.95rem;color:rgba(255,255,255,0.65);line-height:1.7;max-width:480px;margin-bottom:32px;opacity:0;animation:fu 0.8s 0.7s ease forwards}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:fu 0.8s 0.9s ease forwards}
+@keyframes fu{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:14px 28px;border:none;cursor:pointer;transition:all 0.3s;text-decoration:none}
+.btn-terra{background:var(--terra);color:#fff}
+.btn-terra:hover{background:var(--terra2);transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3)}
+.btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,0.08)}
+.btn-verde{background:var(--verde);color:#fff}
+.btn-verde:hover{background:var(--verde2)}
+
+/* STATS */
+.stats{background:var(--verde3);display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:28px 16px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)}
+.stat:last-child{border:none}
+.stat-n{font-family:var(--font);font-size:2rem;font-weight:300;color:var(--oro);line-height:1}
+.stat-l{font-size:0.65rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:6px}
+
+/* PAGES */
+.page{display:none;padding-top:56px;min-height:100vh}
+.page.on{display:block}
+
+/* CATALOG */
+.cat-page{padding:32px 20px 100px}
+.cat-head{margin-bottom:24px}
+.cat-eye{font-size:0.65rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;color:var(--terra);margin-bottom:8px}
+.cat-title{font-family:var(--font);font-size:1.8rem;font-weight:400}
+.cat-title em{color:var(--verde);font-style:italic}
+
+/* Filters */
+.filters{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:24px;-webkit-overflow-scrolling:touch}
+.filters::-webkit-scrollbar{display:none}
+.filt{padding:8px 16px;border:1px solid var(--sabbia2);background:transparent;color:var(--testo2);font-size:0.75rem;font-family:var(--body);font-weight:500;cursor:pointer;white-space:nowrap;transition:all 0.2s;border-radius:24px}
+.filt.on{background:var(--verde);color:#fff;border-color:var(--verde)}
+
+/* Plant grid */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.pcard{background:#fff;border-radius:8px;overflow:hidden;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s;position:relative}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.1)}
+.pcard-img{height:160px;overflow:hidden;background:var(--sabbia)}
+.pcard-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.pcard:hover .pcard-img img{transform:scale(1.1)}
+.pcard-body{padding:14px}
+.pcard-name{font-family:var(--font);font-size:1rem;font-weight:600;margin-bottom:2px;color:var(--testo)}
+.pcard-sci{font-size:0.72rem;font-style:italic;color:var(--testo2);margin-bottom:6px}
+.pcard-avail{font-size:0.68rem;font-weight:600;padding:3px 8px;border-radius:12px;display:inline-block}
+.pcard-avail.yes{background:#D1FAE5;color:#065F46}
+.pcard-avail.soon{background:#FEF3C7;color:#92400E}
+.pcard-variants{font-size:0.65rem;color:var(--testo2);margin-top:6px}
+.pcard-cat{position:absolute;top:8px;right:8px;font-size:0.6rem;font-weight:600;padding:3px 8px;background:rgba(0,0,0,0.5);color:#fff;border-radius:10px;text-transform:uppercase;letter-spacing:0.05em}
+
+/* Product detail modal */
+.modal-bg{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px)}
+.modal-bg.on{display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--crema);width:100%;max-width:500px;max-height:85vh;overflow-y:auto;border-radius:16px 16px 0 0;padding:24px;animation:slideUp 0.3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--testo2)}
+.modal-img{width:100%;height:240px;object-fit:cover;border-radius:8px;margin-bottom:16px}
+.modal-name{font-family:var(--font);font-size:1.6rem;font-weight:600;margin-bottom:4px}
+.modal-sci{font-size:0.88rem;font-style:italic;color:var(--testo2);margin-bottom:16px}
+.modal-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.modal-info-item{background:#fff;padding:12px;border-radius:6px}
+.modal-info-label{font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--testo2);margin-bottom:4px}
+.modal-info-val{font-size:0.9rem;font-weight:500}
+.modal-variants{margin-bottom:20px}
+.modal-var-title{font-size:0.72rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--verde);margin-bottom:8px}
+.modal-var-list{display:flex;flex-wrap:wrap;gap:6px}
+.modal-var-tag{font-size:0.75rem;padding:6px 12px;background:var(--sabbia);border-radius:20px;color:var(--testo2)}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1;justify-content:center;font-size:0.72rem;padding:12px}
+
+/* AI FLORA */
+.ai-page{padding:24px 20px 100px;max-width:500px;margin:0 auto}
+.ai-head{text-align:center;margin-bottom:24px}
+.chatbox{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.chat-bar{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--verde3);color:#fff}
+.chat-av{width:36px;height:36px;border-radius:50%;overflow:hidden;border:2px solid var(--oro)}
+.chat-av img{width:100%;height:100%}
+.chat-av-name{font-size:0.85rem;font-weight:600}
+.chat-av-status{display:flex;align-items:center;gap:6px;font-size:0.68rem;color:rgba(255,255,255,0.6)}
+.sdot{width:6px;height:6px;border-radius:50%;background:#10B981;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.cmsgs{height:360px;overflow-y:auto;padding:16px}
+.cmsg{max-width:85%;margin-bottom:12px;animation:fu 0.3s ease}
+.cmsg.bot{margin-right:auto}
+.cmsg.usr{margin-left:auto}
+.cmsg-bubble{padding:12px 16px;border-radius:16px;font-size:0.85rem;line-height:1.55}
+.cmsg.bot .cmsg-bubble{background:var(--sabbia);color:var(--testo);border-bottom-left-radius:4px}
+.cmsg.usr .cmsg-bubble{background:var(--verde);color:#fff;border-bottom-right-radius:4px}
+.qrs{padding:8px 16px;display:flex;gap:6px;flex-wrap:wrap}
+.qr{padding:8px 14px;background:var(--sabbia);border:1px solid var(--sabbia2);border-radius:20px;font-size:0.75rem;cursor:pointer;font-family:var(--body);color:var(--verde2);transition:all 0.2s}
+.qr:hover{background:var(--verde);color:#fff;border-color:var(--verde)}
+.cinpr{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--sabbia)}
+.cinp{flex:1;padding:10px 14px;border:1px solid var(--sabbia2);border-radius:24px;font-size:0.85rem;font-family:var(--body);outline:none}
+.csend{width:40px;height:40px;border-radius:50%;background:var(--verde);color:#fff;border:none;cursor:pointer;font-size:1.1rem}
+
+/* QUOTE WIZARD */
+.quote-page{padding:24px 20px 100px;max-width:500px;margin:0 auto}
+.steps-bar{display:flex;margin-bottom:32px}
+.step-dot{flex:1;text-align:center;padding-bottom:12px;border-bottom:3px solid var(--sabbia2);font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--testo2);transition:all 0.3s}
+.step-dot.on{border-bottom-color:var(--verde);color:var(--verde)}
+.step-dot.done{border-bottom-color:var(--oro);color:var(--oro)}
+.wiz-step{display:none}
+.wiz-step.on{display:block}
+.wiz-title{font-family:var(--font);font-size:1.4rem;font-weight:500;margin-bottom:8px}
+.wiz-sub{font-size:0.82rem;color:var(--testo2);margin-bottom:24px}
+
+/* Plant select in wizard */
+.wiz-plant{display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:8px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;transition:all 0.2s}
+.wiz-plant.sel{border-color:var(--verde);background:#FAFDF5}
+.wiz-plant-img{width:48px;height:48px;border-radius:6px;object-fit:cover}
+.wiz-plant-info{flex:1}
+.wiz-plant-name{font-weight:600;font-size:0.88rem}
+.wiz-plant-sci{font-size:0.72rem;font-style:italic;color:var(--testo2)}
+.wiz-plant-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--sabbia2);display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.2s}
+.wiz-plant.sel .wiz-plant-check{background:var(--verde);border-color:var(--verde);color:#fff}
+
+/* Qty step */
+.qty-row{display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:8px;margin-bottom:8px}
+.qty-row img{width:40px;height:40px;border-radius:6px;object-fit:cover}
+.qty-row-info{flex:1}
+.qty-row-name{font-weight:600;font-size:0.85rem}
+.qty-input{width:70px;padding:8px 12px;border:1px solid var(--sabbia2);border-radius:6px;font-size:0.9rem;font-family:var(--body);text-align:center}
+.note-input{width:100%;padding:8px 12px;border:1px solid var(--sabbia2);border-radius:6px;font-size:0.8rem;font-family:var(--body);margin-top:6px}
+
+/* Form fields */
+.form-group{margin-bottom:16px}
+.form-label{font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--testo2);margin-bottom:6px;display:block}
+.form-input{width:100%;padding:12px 16px;border:1px solid var(--sabbia2);border-radius:6px;font-size:0.88rem;font-family:var(--body);background:#fff;outline:none}
+.form-input:focus{border-color:var(--verde)}
+
+/* Wizard nav */
+.wiz-nav{display:flex;gap:12px;margin-top:24px}
+.wiz-nav .btn{flex:1;justify-content:center}
+
+/* FOOTER */
+.ft{background:var(--verde3);padding:20px 24px;text-align:center}
+.ft-brand{color:var(--oro);font-family:var(--font);font-size:1rem;font-weight:500}
+.ft-stand{color:rgba(255,255,255,0.4);font-size:0.7rem;margin-top:4px}
+
+/* GARDEN VISION */
+.gv-style-card{padding:16px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;text-align:center;touch-action:manipulation}
+.gv-style-card:hover,.gv-style-card.on{border-color:var(--verde);background:#FAFDF5}
+#gv-ba-container img{pointer-events:none}
+
+/* ═══ RESPONSIVE — TABLET ═══ */
+@media(max-width:768px){
+  .nav{padding:0 16px;height:52px}
+  .nav-links{gap:12px}
+  .nav-link{font-size:0.68rem;letter-spacing:0.06em}
+  .hero-c{padding:0 24px 60px}
+  .hero-d{font-size:0.88rem}
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .stat{padding:20px 12px}
+  .stat-n{font-size:1.6rem}
+  .cat-page{padding:24px 16px 100px}
+  .pgrid{grid-template-columns:repeat(3,1fr);gap:12px}
+  .pcard-img{height:150px}
+  .modal{max-width:100%;border-radius:20px 20px 0 0;max-height:90vh}
+  .modal-img{height:200px}
+  .ai-page,.quote-page{padding:20px 16px 100px}
+  .cmsgs{height:320px}
+}
+
+/* ═══ RESPONSIVE — MOBILE ═══ */
+@media(max-width:480px){
+  /* Nav → bottom tab bar on mobile */
+  .nav{top:auto;bottom:0;height:60px;padding:0;border-top:1px solid rgba(255,255,255,0.1);justify-content:center}
+  .nav-logo{display:block;position:fixed;top:10px;left:12px;z-index:300}
+  .nav-logo img{height:24px}
+  .nav-links{gap:0;flex:1;justify-content:space-around}
+  .nav-link{font-size:0.62rem;letter-spacing:0.04em;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .nav-icon{display:block;font-size:1.3rem}
+  .lang-sel{position:fixed;bottom:68px;right:12px;z-index:300;gap:3px;background:rgba(26,46,10,0.92);backdrop-filter:blur(12px);padding:4px 6px;border-radius:20px}
+  .lang-btn{font-size:0.6rem;padding:3px 6px;border-radius:4px}
+  
+  /* Pages adjust for bottom nav */
+  .page{padding-top:0;padding-bottom:72px}
+  #p-home{padding-top:0}
+  
+  /* Hero */
+  .hero{min-height:calc(100vh - 60px);padding-top:0}
+  .hero-c{padding:0 20px 40px}
+  .hero-eye{font-size:0.6rem;letter-spacing:0.2em;margin-bottom:12px}
+  .hero-h1{font-size:clamp(2rem,8vw,3rem);margin-bottom:14px}
+  .hero-d{font-size:0.82rem;margin-bottom:24px;line-height:1.6}
+  .hero-btns{flex-direction:column;gap:10px}
+  .hero-btns .btn{width:100%;justify-content:center;padding:16px 24px;font-size:0.76rem}
+  
+  /* Stats */
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .stat{padding:20px 12px;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .stat-n{font-size:1.8rem}
+  .stat-l{font-size:0.6rem}
+  
+  /* Catalog */
+  .cat-page{padding:20px 14px 80px}
+  .cat-head{margin-bottom:16px}
+  .cat-title{font-size:1.5rem}
+  .filters{gap:6px;margin-bottom:16px;padding:0 2px 10px}
+  .filt{padding:7px 14px;font-size:0.7rem}
+  .pgrid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .pcard{border-radius:10px}
+  .pcard-img{height:140px}
+  .pcard-body{padding:10px 12px}
+  .pcard-name{font-size:0.9rem}
+  .pcard-sci{font-size:0.68rem;margin-bottom:4px}
+  .pcard-avail{font-size:0.62rem;padding:2px 7px}
+  .pcard-variants{font-size:0.6rem;margin-top:4px}
+  .pcard-cat{font-size:0.55rem;padding:2px 6px;top:6px;right:6px}
+  
+  /* Modal → full screen on mobile */
+  .modal-bg.on{align-items:stretch}
+  .modal{max-height:100vh;height:100%;border-radius:0;padding:20px 16px;padding-top:48px}
+  .modal-close{top:12px;right:12px;font-size:1.8rem;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--sabbia);border-radius:50%;z-index:10}
+  .modal-img{height:200px;border-radius:12px}
+  .modal-name{font-size:1.4rem}
+  .modal-sci{font-size:0.82rem;margin-bottom:12px}
+  .modal-info{gap:8px}
+  .modal-info-item{padding:10px}
+  .modal-info-label{font-size:0.6rem}
+  .modal-info-val{font-size:0.82rem}
+  .modal-var-tag{font-size:0.7rem;padding:5px 10px}
+  .modal-actions{flex-direction:column;gap:8px}
+  .modal-actions .btn{width:100%;justify-content:center;padding:14px;font-size:0.75rem}
+  
+  /* Chat — optimized for mobile keyboard */
+  .ai-page{padding:12px 12px 80px}
+  .ai-head{margin-bottom:16px}
+  .chatbox{border-radius:16px}
+  .chat-bar{padding:12px 14px}
+  .chat-av{width:32px;height:32px}
+  .chat-av-name{font-size:0.8rem}
+  .cmsgs{height:300px;padding:12px}
+  .cmsg-bubble{padding:10px 14px;font-size:0.82rem;border-radius:18px}
+  .qrs{padding:6px 12px;gap:5px}
+  .qr{padding:7px 12px;font-size:0.7rem}
+  .cinpr{padding:10px 12px}
+  .cinp{padding:10px 14px;font-size:0.88rem;border-radius:24px}
+  .csend{width:38px;height:38px;font-size:1rem}
+  
+  /* Quote wizard */
+  .quote-page{padding:16px 14px 80px}
+  .steps-bar{margin-bottom:20px}
+  .step-dot{font-size:0.58rem;padding-bottom:10px;letter-spacing:0.06em}
+  .wiz-title{font-size:1.2rem}
+  .wiz-sub{font-size:0.78rem;margin-bottom:16px}
+  .wiz-plant{padding:10px;gap:10px;border-radius:10px;margin-bottom:6px}
+  .wiz-plant-img{width:44px;height:44px;border-radius:8px}
+  .wiz-plant-name{font-size:0.82rem}
+  .wiz-plant-sci{font-size:0.68rem}
+  .wiz-plant-check{width:28px;height:28px;font-size:0.85rem}
+  .qty-row{padding:10px;gap:10px}
+  .qty-row img{width:36px;height:36px}
+  .qty-row-name{font-size:0.8rem}
+  .qty-input{width:64px;padding:10px;font-size:16px}
+  .note-input{padding:10px;font-size:16px;margin-top:4px}
+  .form-input{padding:14px 16px;font-size:16px;border-radius:10px}
+  .form-label{font-size:0.68rem;margin-bottom:5px}
+  .form-group{margin-bottom:14px}
+  .wiz-nav{gap:10px;margin-top:20px;position:sticky;bottom:72px;background:var(--crema);padding:12px 0;z-index:10}
+  .wiz-nav .btn{padding:14px 20px;font-size:0.76rem;border-radius:8px}
+  
+  /* Footer */
+  .ft{padding:16px 20px 72px}
+  .ft-brand{font-size:0.88rem}
+  .ft-stand{font-size:0.65rem}
+}
+
+/* ═══ TOUCH OPTIMIZATIONS ═══ */
+@media(hover:none){
+  .pcard:active{transform:scale(0.97);transition:transform 0.1s}
+  .btn:active{transform:scale(0.96)}
+  .wiz-plant:active{background:var(--sabbia)}
+  .filt:active{transform:scale(0.95)}
+  .qr:active{background:var(--verde);color:#fff}
+  /* Prevent double-tap zoom on buttons */
+  .btn,.filt,.nav-link,.lang-btn,.qr,.wiz-plant,.pcard{touch-action:manipulation}
+  /* Larger touch targets */
+  .nav-link{min-height:44px;display:flex;align-items:center}
+  .filt{min-height:40px}
+  .wiz-plant{min-height:56px}
+}
+
+/* ═══ SAFE AREAS (iPhone notch) ═══ */
+@supports(padding-bottom:env(safe-area-inset-bottom)){
+  @media(max-width:480px){
+    .nav{padding-bottom:env(safe-area-inset-bottom)}
+    .ft{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+    .wiz-nav{bottom:calc(60px + env(safe-area-inset-bottom))}
+  }
+}
+
+/* ═══ LANDSCAPE MOBILE ═══ */
+@media(max-height:500px) and (orientation:landscape){
+  .hero{min-height:100vh}
+  .hero-h1{font-size:1.8rem}
+  .hero-d{display:none}
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .stat{padding:12px 8px}
+  .stat-n{font-size:1.3rem}
+  .cmsgs{height:200px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo" onclick="adminTap()"><img src="https://www.vivaicintoli.com/content/images/thumbs/0072118.png" alt="Vivai Cintoli"></div>
+  <div class="nav-links">
+    <span class="nav-link on" onclick="go('home')"><span class="nav-icon">🏠</span>Home</span>
+    <span class="nav-link" onclick="go('catalog')"><span class="nav-icon">🌿</span>Catalogo</span>
+    <span class="nav-link" onclick="go('ai')"><span class="nav-icon">🤖</span>Flora</span>
+    <span class="nav-link" onclick="go('quote')"><span class="nav-icon">📋</span>Preventivo</span>
+  </div>
+</nav>
+<!-- Lang selector lives outside nav to escape backdrop-filter stacking context on mobile -->
+<div class="lang-sel">
+  <button class="lang-btn on" onclick="setLang('it')">IT</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('hr')">HR</button>
+  <button class="lang-btn" onclick="setLang('de')">DE</button>
+</div>
+
+<!-- HOME -->
+<div id="p-home" class="page on">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-ov"></div>
+    <div class="hero-c">
+      <div class="hero-eye" id="hero-eye">Fiera Internazionale &middot; Zagabria 2026</div>
+      <h1 class="hero-h1" id="hero-h1">La bellezza <em>siciliana</em><br>del verde</h1>
+      <p class="hero-d" id="hero-d">Oltre 400 specie di piante mediterranee. Ulivi e carrubi secolari, palme, agrumi e molto altro &mdash; dalla Sicilia al mondo.</p>
+      <div class="hero-btns">
+        <button class="btn btn-terra" onclick="go('catalog')" id="hero-c1">Sfoglia il Catalogo</button>
+        <button class="btn btn-ghost" onclick="go('quote')" id="hero-c2">Richiedi Preventivo</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats" id="hero-stats">
+    <div class="stat"><div class="stat-n" id="stat-species">—</div><div class="stat-l" id="stat-species-l">Specie</div></div>
+    <div class="stat"><div class="stat-n">30</div><div class="stat-l" id="stat-hectares-l">Ettari</div></div>
+    <div class="stat"><div class="stat-n" id="stat-plants">—</div><div class="stat-l" id="stat-plants-l">Piante</div></div>
+    <div class="stat"><div class="stat-n" id="stat-cats">—</div><div class="stat-l" id="stat-cats-l">Categorie</div></div>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<div id="p-catalog" class="page">
+  <div class="cat-page">
+    <div class="cat-head">
+      <div class="cat-eye" id="cat-eye">Catalogo reale</div>
+      <h2 class="cat-title" id="cat-title">Le nostre <em>piante</em></h2>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="pgrid" id="pgrid"></div>
+  </div>
+</div>
+
+<!-- AI FLORA + GARDEN VISION -->
+<div id="p-ai" class="page">
+  <div class="ai-page">
+    <div class="ai-head">
+      <div class="cat-eye">Assistente digitale</div>
+      <h2 class="cat-title">Consulente <em>Flora</em></h2>
+    </div>
+
+    <!-- Toggle Chat / Garden Vision -->
+    <div style="display:flex;gap:4px;background:rgba(74,93,35,0.08);border-radius:28px;padding:4px;margin-bottom:20px">
+      <button id="tab-chat" class="filt on" onclick="showFloraTab('chat')" style="flex:1;border-radius:24px;text-align:center;font-weight:600">💬 Chat Flora</button>
+      <button id="tab-gv" class="filt" onclick="showFloraTab('gv')" style="flex:1;border-radius:24px;text-align:center;font-weight:600">🏡 Garden Vision</button>
+    </div>
+
+    <!-- CHAT PANEL -->
+    <div id="flora-chat" class="chatbox">
+      <div class="chat-bar">
+        <div class="chat-av"><img src="https://www.vivaicintoli.com/content/images/thumbs/0072118.png" alt=""></div>
+        <div>
+          <div class="chat-av-name">Flora &mdash; Vivai Cintoli</div>
+          <div class="chat-av-status"><div class="sdot"></div> Online</div>
+        </div>
+      </div>
+      <div class="cmsgs" id="cmsgs"></div>
+      <div class="qrs" id="qrs"></div>
+      <div class="cinpr">
+        <input class="cinp" id="cinp" type="text" placeholder="Scrivi un messaggio..." onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="csend" onclick="sendMsg()">&#8593;</button>
+      </div>
+    </div>
+
+    <!-- GARDEN VISION PANEL -->
+    <div id="flora-gv" style="display:none">
+
+      <!-- Step indicator -->
+      <div id="gv-steps-bar" style="display:flex;margin-bottom:20px">
+        <div class="step-dot on" id="gvs1">📍 Posizione</div>
+        <div class="step-dot" id="gvs2">🌿 Stile</div>
+        <div class="step-dot" id="gvs3">🤖 Rendering</div>
+      </div>
+
+      <!-- GV STEP 1: Address search + Map -->
+      <div id="gv-step1">
+        <div class="wiz-title">Trova la tua proprietà</div>
+        <div class="wiz-sub">Inserisci l'indirizzo del tuo giardino, hotel o villa.</div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <input class="form-input" id="gv-address" type="text" placeholder="Es: Hotel Dubrovnik Palace, Croatia" style="flex:1;border-radius:24px;font-size:16px">
+          <button class="btn btn-verde" onclick="gvSearchAddress()" style="padding:12px 20px;border-radius:24px;white-space:nowrap;font-size:0.75rem">🔍 Cerca</button>
+        </div>
+
+        <!-- Map container -->
+        <div id="gv-map-container" style="display:none">
+          <div id="gv-map" style="width:100%;height:280px;border-radius:12px;overflow:hidden;border:2px solid var(--sabbia2);background:var(--sabbia)"></div>
+          <p style="font-size:0.72rem;color:var(--testo2);margin-top:8px;text-align:center">Trascina e zoom sulla mappa per centrare l'area del giardino</p>
+
+          <!-- Capture button -->
+          <button class="btn btn-terra" onclick="gvCaptureView()" style="width:100%;margin-top:12px;justify-content:center;border-radius:12px;padding:14px">
+            📸 Cattura questa vista e scegli lo stile →
+          </button>
+        </div>
+
+        <!-- Fallback without Google Maps API key -->
+        <div id="gv-no-api" style="display:none;text-align:center;padding:24px;background:#fff;border-radius:12px;margin-top:12px">
+          <div style="font-size:2rem;margin-bottom:12px">🗺️</div>
+          <p style="font-size:0.88rem;color:var(--testo2);margin-bottom:16px">Puoi anche caricare direttamente una foto aerea o una foto del tuo giardino.</p>
+          <label style="display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:var(--verde);color:#fff;border-radius:12px;cursor:pointer;font-size:0.82rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase">
+            📷 Carica foto
+            <input type="file" id="gv-upload" accept="image/*" style="display:none" onchange="gvHandleUpload(event)">
+          </label>
+        </div>
+      </div>
+
+      <!-- GV STEP 2: Style selection -->
+      <div id="gv-step2" style="display:none">
+        <div class="wiz-title">Scegli lo stile del giardino</div>
+        <div class="wiz-sub">Seleziona un preset o personalizza le piante.</div>
+
+        <!-- Preview of captured image -->
+        <div style="position:relative;margin-bottom:16px">
+          <img id="gv-preview" style="width:100%;height:180px;object-fit:cover;border-radius:12px" src="">
+          <div style="position:absolute;bottom:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;padding:4px 12px;border-radius:16px;font-size:0.7rem;font-weight:600">Vista catturata</div>
+        </div>
+
+        <!-- Style presets -->
+        <div id="gv-styles" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+          <div class="gv-style-card on" onclick="gvSelectStyle(this,'mediterranean')" data-style="mediterranean">
+            <div style="font-size:1.4rem;margin-bottom:4px">🫒</div>
+            <div style="font-weight:700;font-size:0.82rem">Mediterraneo</div>
+            <div style="font-size:0.68rem;color:var(--testo2)">Olivi, cipressi, lavanda, rosmarino</div>
+          </div>
+          <div class="gv-style-card" onclick="gvSelectStyle(this,'tropical')" data-style="tropical">
+            <div style="font-size:1.4rem;margin-bottom:4px">🌴</div>
+            <div style="font-weight:700;font-size:0.82rem">Tropicale</div>
+            <div style="font-size:0.68rem;color:var(--testo2)">Palme, strelitzie, cycas</div>
+          </div>
+          <div class="gv-style-card" onclick="gvSelectStyle(this,'succulent')" data-style="succulent">
+            <div style="font-size:1.4rem;margin-bottom:4px">🌵</div>
+            <div style="font-weight:700;font-size:0.82rem">Succulento</div>
+            <div style="font-size:0.68rem;color:var(--testo2)">Agavi, aeonium, euphorbie</div>
+          </div>
+          <div class="gv-style-card" onclick="gvSelectStyle(this,'formal')" data-style="formal">
+            <div style="font-size:1.4rem;margin-bottom:4px">✂️</div>
+            <div style="font-weight:700;font-size:0.82rem">Formale</div>
+            <div style="font-size:0.68rem;color:var(--testo2)">Siepi, arbusti modellati, topiarie</div>
+          </div>
+        </div>
+
+        <!-- Custom prompt override -->
+        <details style="margin-bottom:16px">
+          <summary style="font-size:0.78rem;font-weight:600;color:var(--verde);cursor:pointer;padding:8px 0">✏️ Personalizza il prompt (avanzato)</summary>
+          <textarea id="gv-custom-prompt" class="form-input" rows="4" style="margin-top:8px;border-radius:10px;font-size:14px" placeholder="Descrivi il giardino che desideri..."></textarea>
+        </details>
+
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-ghost" onclick="gvGoStep(1)" style="flex:1;justify-content:center;border-radius:12px;color:var(--testo);border-color:var(--sabbia2)">← Indietro</button>
+          <button class="btn btn-terra" onclick="gvGenerate()" style="flex:2;justify-content:center;border-radius:12px;padding:14px" id="gv-generate-btn">🤖 Genera Rendering AI</button>
+        </div>
+      </div>
+
+      <!-- GV STEP 3: Result with before/after -->
+      <div id="gv-step3" style="display:none">
+        <div class="wiz-title">Il tuo giardino trasformato</div>
+
+        <!-- Loading state -->
+        <div id="gv-loading" style="display:none;text-align:center;padding:60px 20px;background:#fff;border-radius:12px">
+          <div style="font-size:3rem;animation:pulse 1.5s infinite">🌿</div>
+          <div style="font-family:var(--font);font-size:1.2rem;margin-top:16px;color:var(--verde)">Flora sta progettando il tuo giardino...</div>
+          <div style="font-size:0.82rem;color:var(--testo2);margin-top:8px">L'AI sta generando il rendering. ~15-20 secondi.</div>
+          <div style="width:200px;height:4px;background:var(--sabbia2);border-radius:2px;margin:20px auto 0;overflow:hidden"><div id="gv-progress" style="width:0%;height:100%;background:var(--verde);border-radius:2px;transition:width 0.5s"></div></div>
+        </div>
+
+        <!-- Before/After slider -->
+        <div id="gv-result" style="display:none">
+          <div id="gv-ba-container" style="position:relative;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;cursor:ew-resize;touch-action:none;user-select:none;-webkit-user-select:none">
+            <img id="gv-img-after" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" src="">
+            <div id="gv-ba-clip" style="position:absolute;top:0;left:0;bottom:0;width:50%;overflow:hidden">
+              <img id="gv-img-before" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover" src="">
+            </div>
+            <div id="gv-ba-handle" style="position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;transform:translateX(-50%);box-shadow:0 0 10px rgba(0,0,0,0.3);z-index:5">
+              <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-size:0.85rem">↔</div>
+            </div>
+            <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.6);color:#fff;padding:4px 10px;border-radius:12px;font-size:0.65rem;font-weight:600;z-index:6">PRIMA</div>
+            <div style="position:absolute;top:10px;right:10px;background:rgba(74,93,35,0.85);color:#fff;padding:4px 10px;border-radius:12px;font-size:0.65rem;font-weight:600;z-index:6">DOPO</div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;gap:10px;margin-top:16px">
+            <button class="btn btn-verde" onclick="gvAddToQuote()" style="flex:1;justify-content:center;border-radius:12px;font-size:0.72rem;padding:14px">📋 Preventivo</button>
+            <a id="gv-wa-link" class="btn btn-terra" href="#" target="_blank" style="flex:1;justify-content:center;border-radius:12px;font-size:0.72rem;padding:14px;text-decoration:none">📱 WhatsApp</a>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:10px">
+            <button class="btn btn-ghost" onclick="gvGoStep(2)" style="flex:1;justify-content:center;border-radius:12px;color:var(--testo);border-color:var(--sabbia2);font-size:0.72rem">🔄 Cambia stile</button>
+            <button class="btn btn-ghost" onclick="gvGoStep(1)" style="flex:1;justify-content:center;border-radius:12px;color:var(--testo);border-color:var(--sabbia2);font-size:0.72rem">📍 Nuovo indirizzo</button>
+          </div>
+        </div>
+
+        <!-- Error state -->
+        <div id="gv-error" style="display:none;text-align:center;padding:40px 20px;background:#FEE2E2;border-radius:12px">
+          <div style="font-size:2rem;margin-bottom:12px">⚠️</div>
+          <div style="font-size:0.9rem;color:#DC2626;font-weight:600;margin-bottom:8px" id="gv-error-msg">Errore nella generazione</div>
+          <button class="btn btn-terra" onclick="gvGenerate()" style="border-radius:12px;font-size:0.78rem">Riprova</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE WIZARD -->
+<div id="p-quote" class="page">
+  <div class="quote-page">
+    <div class="cat-head">
+      <div class="cat-eye">Preventivo fiera</div>
+      <h2 class="cat-title">Crea il tuo <em>preventivo</em></h2>
+    </div>
+    <div class="steps-bar" id="steps-bar"></div>
+    <div id="wiz-steps"></div>
+    <div class="wiz-nav" id="wiz-nav"></div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="ft">
+  <div class="ft-brand">Vivai Cintoli Srl</div>
+  <div class="ft-stand">Fiera del Verde &middot; Zagabria 2026 &middot; Stand B-14 &middot; Pad. 3</div>
+</footer>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════
+   REAL CATALOG DATA from vivaicintoli.com
+═══════════════════════════════════════ */
+var CATS = [
+  {id:'all',name:'Tutto',name_en:'All',name_hr:'Sve',name_de:'Alle'},
+  {id:'agrume',name:'Agrumi',name_en:'Citrus',name_hr:'Citrusi',name_de:'Zitrusfrüchte'},
+  {id:'albero',name:'Alberi',name_en:'Trees',name_hr:'Stabla',name_de:'Bäume'},
+  {id:'palma',name:'Palme',name_en:'Palms',name_hr:'Palme',name_de:'Palmen'},
+  {id:'succulenta',name:'Succulente',name_en:'Succulents',name_hr:'Sukulente',name_de:'Sukkulenten'},
+  {id:'cactus',name:'Cactus',name_en:'Cacti',name_hr:'Kaktusi',name_de:'Kakteen'},
+  {id:'arbusto',name:'Arbusti',name_en:'Shrubs',name_hr:'Grmlje',name_de:'Sträucher'},
+  {id:'arbusto-fiore',name:'Arbusti fiore',name_en:'Flowering',name_hr:'Cvjetni',name_de:'Blühsträucher'},
+  {id:'rampicante',name:'Rampicanti',name_en:'Climbers',name_hr:'Penjačice',name_de:'Kletterpflanzen'},
+  {id:'erbacea',name:'Erbacee',name_en:'Perennials',name_hr:'Trajnice',name_de:'Stauden'},
+  {id:'bulbosa',name:'Bulbose',name_en:'Bulbs',name_hr:'Lukovičaste',name_de:'Zwiebelpflanzen'},
+  {id:'graminacea',name:'Graminacee',name_en:'Grasses',name_hr:'Trave',name_de:'Gräser'},
+  {id:'aromatica',name:'Aromatiche',name_en:'Aromatics',name_hr:'Aromatične',name_de:'Aromapflanzen'},
+  {id:'tappezzante',name:'Tappezzanti',name_en:'Ground Cover',name_hr:'Pokrivači',name_de:'Bodendecker'},
+  {id:'siepe',name:'Siepi',name_en:'Hedges',name_hr:'Živice',name_de:'Hecken'},
+  {id:'fruttifero',name:'Fruttiferi',name_en:'Fruit',name_hr:'Voćke',name_de:'Obstbäume'},
+];
+
+var PLANTS = []; // Loaded from external catalog.json
+var _FALLBACK = [
+  {i:'aeonium-aeonium-arboreum',n:'Aeonium',s:'Aeonium arboreum',c:'succulenta',q:19,k:'A04-F589-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0060012_415.jpeg'},
+  {i:'african-queen-agapanthus-african-queen',n:'African Queen',s:'Agapanthus \'African Queen\'',c:'bulbosa',q:48,k:'AGAP-F858-01'},
+  {i:'albero-bottiglia-brachychiton-rupestris-albero-bottiglia',n:'Albero bottiglia',s:'Brachychiton rupestris \'Albero bottiglia\'',c:'albero',q:220,k:'BRAC-F802-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0076352_415.jpeg'},
+  {i:'alloro-laurus-nobilis',n:'Alloro',s:'Laurus nobilis',c:'siepe',q:2018,k:'A02-F291-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0047761_415.jpeg'},
+  {i:'ammophila-ammophila-arenaria',n:'Ammophila',s:'Ammophila arenaria',c:'graminacea',q:0,k:'A03-F029-01'},
+  {i:'aptenia-aptenia-cordifolia',n:'Aptenia',s:'Aptenia cordifolia',c:'erbacea',q:114,k:'A02-F032-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0050002_415.jpeg'},
+  {i:'arancio-citrus-sinensis-arancio',n:'Arancio',s:'Citrus sinensis \'Arancio\'',c:'agrume',q:40,k:'A01-F150-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0053422_415.jpeg'},
+  {i:'archontophoenix-archontophoenixalexandrae',n:'Archontophoenix',s:'Archontophoenix alexandrae',c:'palma',q:465,k:'A05-F036-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0076382_415.jpeg'},
+  {i:'archontophoenix-livistona-australis',n:'Archontophoenix',s:'Livistona australis',c:'altro',q:0,k:'LIVI-F986-03'},
+  {i:'aristolochia-aristolochia-gigantea',n:'Aristolochia',s:'Aristolochia gigantea',c:'rampicante',q:99,k:'A02-F038-01',m:'https://www.vivaicintoli.com/content/images/thumbs/0049329_415.jpeg'},
+];
+
+function _expandEntry(e) {
+  return {id:e.i, name:e.n, sci:e.s, cat:e.c, qty:e.q, sku:e.k,
+    img:e.m||'', avail:e.q>0?'available':'soon'};
+}
+
+(function loadCatalog() {
+  fetch('catalog.json')
+    .then(function(r) { if(!r.ok) throw 0; return r.json(); })
+    .then(function(data) {
+      PLANTS = data.map(_expandEntry);
+      renderCatalog();
+      updateStats();
+    })
+    .catch(function() {
+      // Offline / file:// protocol — use fallback
+      PLANTS = _FALLBACK.map(_expandEntry);
+      renderCatalog();
+      updateStats();
+    });
+})();
+
+var WA = '393516715669';
+var lang = 'it';
+var curPage = 'home';
+var curFilter = 'all';
+var quoteSelected = {};
+var quoteData = {};
+
+/* ═══════════════════════════════════════
+   COMPLETE TRANSLATIONS
+═══════════════════════════════════════ */
+var TR = {
+  it: {
+    stat_species:'Specie',stat_hectares:'Ettari',stat_plants:'Piante',stat_cats:'Categorie',
+    hero_eye:'Fiera Internazionale &middot; Zagabria 2026',
+    hero_h1:'La bellezza <em>siciliana</em><br>del verde',
+    hero_d:'Oltre 400 specie di piante mediterranee. Ulivi e carrubi secolari, palme, agrumi e molto altro &mdash; dalla Sicilia al mondo.',
+    hero_c1:'Sfoglia il Catalogo',hero_c2:'Richiedi Preventivo',
+    cat_eye:'Catalogo reale',cat_title:'Le nostre <em>piante</em>',
+    ai_eye:'Assistente digitale',ai_title:'Consulente <em>Flora</em>',ai_sub:'Descrivi il tuo progetto &mdash; ti guider&ograve; verso le specie pi&ugrave; adatte.',
+    ai_placeholder:'Scrivi un messaggio...',
+    q_eye:'Preventivo fiera',q_title:'Crea il tuo <em>preventivo</em>',
+    s1:'Aggiungi',s2:'Quantit\u00e0',s3:'Dati',s4:'Invia',
+    q_add_title:'Aggiungi specie',q_add_sub:'Cerca o sfoglia per categoria',
+    q_search_ph:'\uD83D\uDD0D Cerca per nome o nome scientifico...',
+    q_search_empty:'Cerca una pianta per nome',q_search_empty_sub:'oppure seleziona una categoria per sfogliare',
+    q_search_no:'Nessuna pianta trovata per',q_search_no_sub:'Prova con il nome scientifico o cambia categoria',
+    q_selected:'selezionat','q_selected_1':'selezionata','q_selected_n':'selezionate',
+    q_in_quote:'Nel tuo preventivo',q_continue:'Continua con',q_species:'specie',
+    q_qty_title:'Quantit\u00e0 e note',q_qty_sub:'Indica le quantit\u00e0 desiderate per ogni specie.',
+    q_variant_ph:'Seleziona variante...',q_note_ph:'Note aggiuntive...',q_also_available:'Varianti correlate',
+    q_data_title:'I tuoi dati',q_data_sub:'Per personalizzare il preventivo.',
+    q_vat:'Partita IVA / VAT',q_name:'Nome e cognome',q_company:'Azienda',q_email:'Email',q_phone:'Telefono',q_country:'Paese',q_notes:'Note progetto',q_notes_ph:'Descrivi brevemente il tuo progetto...',
+    q_summary:'Riepilogo preventivo',q_species_in:'specie nel preventivo',
+    q_send_wa:'\uD83D\uDCF1 Invia via WhatsApp',q_send_email:'\u2709\uFE0F Invia via Email',
+    q_back:'\u2190 Indietro',q_next:'Avanti \u2192',q_generate:'Genera preventivo \u2192',q_edit:'\u2190 Modifica',
+    q_suggest_title:'\uD83D\uDCA1 Ti potrebbe interessare anche',q_suggest_sub:'Clienti con gusti simili hanno scelto anche:',
+    q_suggest_add:'+ Aggiungi',
+    avail_soon:'Disponibile a breve',avail_n:'disponibili',
+    variants_label:'varianti',
+    modal_water:'Acqua',modal_light:'Luce',modal_leaf:'Foglia',modal_cold:'Resistenza freddo',
+    modal_variants:'Varianti disponibili',modal_add:'Aggiungi al preventivo',
+    ft_stand:'Fiera del Verde &middot; Zagabria 2026 &middot; Stand B-14 &middot; Pad. 3',
+    nav_home:'Home',nav_cat:'Catalogo',nav_ai:'Flora',nav_quote:'Preventivo',
+    chat_welcome:'Ciao! Sono Flora, la tua consulente botanica. \uD83C\uDF3F Come posso aiutarti oggi?',
+    chat_qr1:'Piante resistenti alla siccit\u00e0',chat_qr2:'Giardino costiero',chat_qr3:'Piante per hotel',chat_qr4:'Ulivi secolari',
+  },
+  en: {
+    stat_species:'Species',stat_hectares:'Hectares',stat_plants:'Plants',stat_cats:'Categories',
+    hero_eye:'International Fair &middot; Zagreb 2026',
+    hero_h1:'The <em>Sicilian</em> beauty<br>of green',
+    hero_d:'Over 400 species of Mediterranean plants. Centuries-old olive and carob trees, palms, citrus and much more &mdash; from Sicily to the world.',
+    hero_c1:'Browse Catalog',hero_c2:'Request a Quote',
+    cat_eye:'Real catalog',cat_title:'Our <em>plants</em>',
+    ai_eye:'Digital assistant',ai_title:'Consultant <em>Flora</em>',ai_sub:'Describe your project &mdash; I\'ll guide you to the most suitable species.',
+    ai_placeholder:'Write a message...',
+    q_eye:'Fair quote',q_title:'Create your <em>quote</em>',
+    s1:'Add',s2:'Quantity',s3:'Details',s4:'Send',
+    q_add_title:'Add species',q_add_sub:'Search or browse by category',
+    q_search_ph:'\uD83D\uDD0D Search by name or scientific name...',
+    q_search_empty:'Search for a plant by name',q_search_empty_sub:'or select a category to browse',
+    q_search_no:'No plants found for',q_search_no_sub:'Try the scientific name or change category',
+    q_selected:'selected','q_selected_1':'selected','q_selected_n':'selected',
+    q_in_quote:'In your quote',q_continue:'Continue with',q_species:'species',
+    q_qty_title:'Quantity and notes',q_qty_sub:'Enter the desired quantities for each species.',
+    q_variant_ph:'Select variant...',q_note_ph:'Additional notes...',q_also_available:'Related variants',
+    q_data_title:'Your details',q_data_sub:'To personalize your quote.',
+    q_vat:'VAT Number',q_name:'Full name',q_company:'Company',q_email:'Email',q_phone:'Phone',q_country:'Country',q_notes:'Project notes',q_notes_ph:'Briefly describe your project...',
+    q_summary:'Quote summary',q_species_in:'species in quote',
+    q_send_wa:'\uD83D\uDCF1 Send via WhatsApp',q_send_email:'\u2709\uFE0F Send via Email',
+    q_back:'\u2190 Back',q_next:'Next \u2192',q_generate:'Generate quote \u2192',q_edit:'\u2190 Edit',
+    q_suggest_title:'\uD83D\uDCA1 You might also like',q_suggest_sub:'Customers with similar tastes also chose:',
+    q_suggest_add:'+ Add',
+    avail_soon:'Available soon',avail_n:'available',
+    variants_label:'variants',
+    modal_water:'Water',modal_light:'Light',modal_leaf:'Foliage',modal_cold:'Cold resistance',
+    modal_variants:'Available variants',modal_add:'Add to quote',
+    ft_stand:'Green Fair &middot; Zagreb 2026 &middot; Stand B-14 &middot; Hall 3',
+    nav_home:'Home',nav_cat:'Catalog',nav_ai:'Flora',nav_quote:'Quote',
+    chat_welcome:'Hello! I\'m Flora, your botanical consultant. \uD83C\uDF3F How can I help you today?',
+    chat_qr1:'Drought-resistant plants',chat_qr2:'Coastal garden',chat_qr3:'Plants for hotels',chat_qr4:'Century-old olives',
+  },
+  hr: {
+    stat_species:'Vrste',stat_hectares:'Hektara',stat_plants:'Biljke',stat_cats:'Kategorije',
+    hero_eye:'Me\u0111unarodni Sajam &middot; Zagreb 2026',
+    hero_h1:'<em>Sicilijanska</em> ljepota<br>zelenila',
+    hero_d:'Vi\u0161e od 400 vrsta mediteranskih biljaka. Stoljetna stabla maslina i rogača, palme, agrumi i jo\u0161 mnogo toga.',
+    hero_c1:'Pregledaj Katalog',hero_c2:'Zatra\u017ei Ponudu',
+    cat_eye:'Stvarni katalog',cat_title:'Na\u0161e <em>biljke</em>',
+    ai_eye:'Digitalni asistent',ai_title:'Konzultant <em>Flora</em>',ai_sub:'Opi\u0161ite svoj projekt \u2014 vodit \u0107u vas do najprikladnijih vrsta.',
+    ai_placeholder:'Napi\u0161ite poruku...',
+    q_eye:'Ponuda za sajam',q_title:'Kreirajte svoju <em>ponudu</em>',
+    s1:'Dodaj',s2:'Koli\u010dina',s3:'Podaci',s4:'Po\u0161alji',
+    q_add_title:'Dodajte vrste',q_add_sub:'Pretra\u017eite ili pregledajte po kategoriji',
+    q_search_ph:'\uD83D\uDD0D Pretra\u017eite po imenu...',
+    q_search_empty:'Tra\u017eite biljku po imenu',q_search_empty_sub:'ili odaberite kategoriju',
+    q_search_no:'Nema biljaka za',q_search_no_sub:'Poku\u0161ajte sa znanstvenim imenom',
+    q_selected:'odabran','q_selected_1':'odabrana','q_selected_n':'odabrane',
+    q_in_quote:'U va\u0161oj ponudi',q_continue:'Nastavi s',q_species:'vrsta',
+    q_qty_title:'Koli\u010dina i napomene',q_qty_sub:'Unesite \u017eeljene koli\u010dine.',
+    q_variant_ph:'Odaberite varijantu...',q_note_ph:'Dodatne napomene...',q_also_available:'Povezane varijante',
+    q_data_title:'Va\u0161i podaci',q_data_sub:'Za personalizaciju ponude.',
+    q_vat:'OIB / PDV broj',q_name:'Ime i prezime',q_company:'Tvrtka',q_email:'Email',q_phone:'Telefon',q_country:'Dr\u017eava',q_notes:'Napomene',q_notes_ph:'Ukratko opi\u0161ite va\u0161 projekt...',
+    q_summary:'Sa\u017eetak ponude',q_species_in:'vrsta u ponudi',
+    q_send_wa:'\uD83D\uDCF1 Po\u0161alji putem WhatsApp',q_send_email:'\u2709\uFE0F Po\u0161alji putem e-po\u0161te',
+    q_back:'\u2190 Natrag',q_next:'Dalje \u2192',q_generate:'Generiraj ponudu \u2192',q_edit:'\u2190 Uredi',
+    q_suggest_title:'\uD83D\uDCA1 Mo\u017eda vas zanima',q_suggest_sub:'Kupci sa sli\u010dnim ukusom tako\u0111er su odabrali:',
+    q_suggest_add:'+ Dodaj',
+    avail_soon:'Uskoro dostupno',avail_n:'dostupno',
+    variants_label:'varijante',
+    modal_water:'Voda',modal_light:'Svjetlo',modal_leaf:'Li\u0161\u0107e',modal_cold:'Otpornost na hladno\u0107u',
+    modal_variants:'Dostupne varijante',modal_add:'Dodaj u ponudu',
+    ft_stand:'Sajam Zelenila &middot; Zagreb 2026 &middot; Stand B-14 &middot; Hala 3',
+    nav_home:'Po\u010detna',nav_cat:'Katalog',nav_ai:'Flora',nav_quote:'Ponuda',
+    chat_welcome:'Bok! Ja sam Flora, va\u0161 botani\u010dki konzultant. \uD83C\uDF3F Kako vam mogu pomo\u0107i?',
+    chat_qr1:'Biljke otporne na su\u0161u',chat_qr2:'Obalni vrt',chat_qr3:'Biljke za hotele',chat_qr4:'Stoljetne masline',
+  },
+  de: {
+    stat_species:'Arten',stat_hectares:'Hektar',stat_plants:'Pflanzen',stat_cats:'Kategorien',
+    hero_eye:'Internationale Messe &middot; Zagreb 2026',
+    hero_h1:'Die <em>sizilianische</em> Sch\u00f6nheit<br>des Gr\u00fcns',
+    hero_d:'\u00dcber 400 Arten mediterraner Pflanzen. Jahrhundertealte Oliven- und Johannisbrotb\u00e4ume, Palmen, Zitrusfr\u00fcchte und vieles mehr.',
+    hero_c1:'Katalog durchbl\u00e4ttern',hero_c2:'Angebot anfordern',
+    cat_eye:'Echter Katalog',cat_title:'Unsere <em>Pflanzen</em>',
+    ai_eye:'Digitaler Assistent',ai_title:'Beraterin <em>Flora</em>',ai_sub:'Beschreiben Sie Ihr Projekt \u2014 ich f\u00fchre Sie zu den am besten geeigneten Arten.',
+    ai_placeholder:'Nachricht schreiben...',
+    q_eye:'Messe-Angebot',q_title:'Erstellen Sie Ihr <em>Angebot</em>',
+    s1:'Hinzuf\u00fcgen',s2:'Menge',s3:'Daten',s4:'Senden',
+    q_add_title:'Arten hinzuf\u00fcgen',q_add_sub:'Suchen oder nach Kategorie durchbl\u00e4ttern',
+    q_search_ph:'\uD83D\uDD0D Nach Name oder wissenschaftlichem Namen suchen...',
+    q_search_empty:'Suchen Sie eine Pflanze',q_search_empty_sub:'oder w\u00e4hlen Sie eine Kategorie',
+    q_search_no:'Keine Pflanzen gefunden f\u00fcr',q_search_no_sub:'Versuchen Sie den wissenschaftlichen Namen',
+    q_selected:'ausgew\u00e4hlt','q_selected_1':'ausgew\u00e4hlt','q_selected_n':'ausgew\u00e4hlt',
+    q_in_quote:'In Ihrem Angebot',q_continue:'Weiter mit',q_species:'Arten',
+    q_qty_title:'Menge und Notizen',q_qty_sub:'Geben Sie die gew\u00fcnschten Mengen ein.',
+    q_variant_ph:'Variante w\u00e4hlen...',q_note_ph:'Zus\u00e4tzliche Notizen...',q_also_available:'Verwandte Varianten',
+    q_data_title:'Ihre Daten',q_data_sub:'Um Ihr Angebot zu personalisieren.',
+    q_vat:'USt-IdNr.',q_name:'Vollst\u00e4ndiger Name',q_company:'Unternehmen',q_email:'E-Mail',q_phone:'Telefon',q_country:'Land',q_notes:'Projektnotizen',q_notes_ph:'Beschreiben Sie kurz Ihr Projekt...',
+    q_summary:'Angebots\u00fcbersicht',q_species_in:'Arten im Angebot',
+    q_send_wa:'\uD83D\uDCF1 \u00dcber WhatsApp senden',q_send_email:'\u2709\uFE0F Per E-Mail senden',
+    q_back:'\u2190 Zur\u00fcck',q_next:'Weiter \u2192',q_generate:'Angebot erstellen \u2192',q_edit:'\u2190 Bearbeiten',
+    q_suggest_title:'\uD83D\uDCA1 Das k\u00f6nnte Sie auch interessieren',q_suggest_sub:'Kunden mit \u00e4hnlichem Geschmack w\u00e4hlten auch:',
+    q_suggest_add:'+ Hinzuf\u00fcgen',
+    avail_soon:'Bald verf\u00fcgbar',avail_n:'verf\u00fcgbar',
+    variants_label:'Varianten',
+    modal_water:'Wasser',modal_light:'Licht',modal_leaf:'Laub',modal_cold:'K\u00e4lteresistenz',
+    modal_variants:'Verf\u00fcgbare Varianten',modal_add:'Zum Angebot hinzuf\u00fcgen',
+    ft_stand:'Gr\u00fcnfl\u00e4chenmesse &middot; Zagreb 2026 &middot; Stand B-14 &middot; Halle 3',
+    nav_home:'Start',nav_cat:'Katalog',nav_ai:'Flora',nav_quote:'Angebot',
+    chat_welcome:'Hallo! Ich bin Flora, Ihre botanische Beraterin. \uD83C\uDF3F Wie kann ich Ihnen helfen?',
+    chat_qr1:'D\u00fcrreresistente Pflanzen',chat_qr2:'K\u00fcstengarten',chat_qr3:'Pflanzen f\u00fcr Hotels',chat_qr4:'Jahrhundertealte Oliven',
+  },
+};
+
+function tr(key){ return (TR[lang]||TR.it)[key] || (TR.it)[key] || key; }
+
+/* ═══════════════════════════════════════
+   CROSS-SELLING / SUGGESTIONS ENGINE
+═══════════════════════════════════════ */
+function getSuggestions(selectedIds) {
+  var scores = {};
+  var affinities = {'succulenta':['cactus','graminacea'],'albero':['arbusto','siepe'],'agrume':['albero','fruttifero'],'palma':['succulenta','albero'],'arbusto-fiore':['erbacea','rampicante'],'aromatica':['erbacea','tappezzante'],'cactus':['succulenta'],'rampicante':['arbusto-fiore','erbacea']};
+  selectedIds.forEach(function(id){
+    var p = PLANTS.find(function(x){return x.id===id});
+    if(!p) return;
+    PLANTS.forEach(function(other){
+      if(!selectedIds.includes(other.id) && other.qty > 0){
+        if(other.cat===p.cat) scores[other.id] = (scores[other.id]||0) + 3;
+        var aff = affinities[p.cat]||[];
+        if(aff.indexOf(other.cat)>-1) scores[other.id] = (scores[other.id]||0) + 2;
+      }
+    });
+  });
+  return Object.keys(scores)
+    .sort(function(a,b){return scores[b]-scores[a]})
+    .slice(0,3)
+    .map(function(id){return PLANTS.find(function(x){return x.id===id})})
+    .filter(Boolean);
+}
+
+/* ═══ NAVIGATION ═══ */
+function go(page) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.getElementById('p-'+page).classList.add('on');
+  document.querySelectorAll('.nav-link').forEach(function(l){l.classList.remove('on')});
+  document.querySelectorAll('.nav-link').forEach(function(l){
+    if(l.textContent.toLowerCase().indexOf(page)>-1 || (page==='home'&&l.textContent==='Home')) l.classList.add('on');
+  });
+  curPage = page;
+  window.scrollTo(0,0);
+  if(page==='catalog') renderCatalog();
+  if(page==='ai' && !document.getElementById('cmsgs').children.length) initChat();
+  if(page==='quote') renderQuote();
+}
+
+/* ═══ LANGUAGE ═══ */
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.toggle('on',b.textContent===l.toUpperCase())});
+  // Apply translations to static elements
+  document.getElementById('hero-eye').innerHTML = tr('hero_eye');
+  document.getElementById('hero-h1').innerHTML = tr('hero_h1');
+  document.getElementById('hero-d').innerHTML = tr('hero_d');
+  document.getElementById('hero-c1').textContent = tr('hero_c1');
+  document.getElementById('hero-c2').textContent = tr('hero_c2');
+  document.getElementById('cat-eye').textContent = tr('cat_eye');
+  document.getElementById('cat-title').innerHTML = tr('cat_title');
+  document.querySelector('.ai-page .cat-eye').textContent = tr('ai_eye');
+  document.querySelector('.ai-page .cat-title').innerHTML = tr('ai_title');
+  document.querySelector('.ai-page p').innerHTML = tr('ai_sub');
+  document.getElementById('cinp').placeholder = tr('ai_placeholder');
+  document.querySelector('.quote-page .cat-eye').textContent = tr('q_eye');
+  document.querySelector('.quote-page .cat-title').innerHTML = tr('q_title');
+  document.querySelector('.ft-stand').innerHTML = tr('ft_stand');
+  // Nav labels
+  var navLinks = document.querySelectorAll('.nav-link');
+  var navKeys = ['nav_home','nav_cat','nav_ai','nav_quote'];
+  navLinks.forEach(function(link,i){
+    var icon = link.querySelector('.nav-icon');
+    var iconHTML = icon ? icon.outerHTML : '';
+    link.innerHTML = iconHTML + tr(navKeys[i]);
+  });
+  renderCatalog();
+  if(curPage==='quote') renderQuote();
+  updateStats();
+}
+
+function updateStats() {
+  var sp = document.getElementById('stat-species');
+  if(sp) sp.textContent = PLANTS.length;
+  var pl = document.getElementById('stat-plants');
+  if(pl) { var total = 0; PLANTS.forEach(function(p){total+=p.qty}); pl.textContent = total > 999 ? Math.round(total/1000)+'K' : total; }
+  var ct = document.getElementById('stat-cats');
+  if(ct) { var cats={}; PLANTS.forEach(function(p){cats[p.cat]=1}); ct.textContent = Object.keys(cats).length; }
+  // Labels
+  var sl = document.getElementById('stat-species-l');
+  if(sl) sl.textContent = tr('stat_species');
+  var hl = document.getElementById('stat-hectares-l');
+  if(hl) hl.textContent = tr('stat_hectares');
+  var plt = document.getElementById('stat-plants-l');
+  if(plt) plt.textContent = tr('stat_plants');
+  var cl = document.getElementById('stat-cats-l');
+  if(cl) cl.textContent = tr('stat_cats');
+}
+
+/* ═══ CATALOG RENDERING ═══ */
+function renderCatalog() {
+  var fl = document.getElementById('filters');
+  fl.innerHTML = '';
+  CATS.forEach(function(c) {
+    var btn = document.createElement('button');
+    btn.className = 'filt' + (curFilter===c.id?' on':'');
+    btn.textContent = lang==='it'?c.name:(lang==='en'?c.name_en:(lang==='hr'?c.name_hr:c.name_de));
+    btn.onclick = function(){curFilter=c.id;renderCatalog()};
+    fl.appendChild(btn);
+  });
+
+  var grid = document.getElementById('pgrid');
+  grid.innerHTML = '';
+  var filtered = curFilter==='all' ? PLANTS : PLANTS.filter(function(p){return p.cat===curFilter});
+  
+  filtered.forEach(function(p) {
+    var card = document.createElement('div');
+    card.className = 'pcard';
+    card.onclick = function(){openModal(p)};
+    var catObj = CATS.find(function(c){return c.id===p.cat});
+    var catName = catObj ? (lang==='it'?catObj.name:(lang==='en'?catObj.name_en:catObj.name)) : '';
+    card.innerHTML = '<div class="pcard-cat">'+catName+'</div>'
+      +'<div class="pcard-img"><img src="'+p.img+'" alt="'+p.name+'" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'"></div>'
+      +'<div class="pcard-body">'
+      +'<div class="pcard-name">'+p.name+'</div>'
+      +'<div class="pcard-sci">'+p.sci+'</div>'
+      +'<span class="pcard-avail '+(p.avail==='available'?'yes':'soon')+'">'
+      +(p.qty>0?p.qty+' disp.':p.availTxt)+'</span>'
+      
+      +'</div>';
+    grid.appendChild(card);
+  });
+}
+
+/* ═══ PRODUCT MODAL ═══ */
+function openModal(p) {
+  var m = document.getElementById('modal');
+  m.innerHTML = '<button class="modal-close" onclick="closeModal()">&times;</button>'
+    +'<img class="modal-img" src="'+p.img+'" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+    +'<div class="modal-name">'+p.name+'</div>'
+    +'<div class="modal-sci">'+p.sci+'</div>'
+    +'<div class="modal-info">'
+    +'<div class="modal-info-item"><div class="modal-info-label">Categoria</div><div class="modal-info-val">'+(function(){var c=CATS.find(function(cc){return cc.id===p.cat});return c?c.name:'—'})()+'</div></div>'
+    +'<div class="modal-info-item"><div class="modal-info-label">SKU</div><div class="modal-info-val">'+(p.sku||'—')+'</div></div>'
+    +'<div class="modal-info-item"><div class="modal-info-label">Stock</div><div class="modal-info-val">'+(p.qty>0?p.qty+' disp.':'—')+'</div></div>'
+    +'<div class="modal-info-item"><div class="modal-info-label">Status</div><div class="modal-info-val">'+(p.avail==='available'?'✓ Disponibile':'⏳ A breve')+'</div></div>'
+    +'</div>'
+    
+    +'<span class="pcard-avail '+(p.avail==='available'?'yes':'soon')+'" style="margin-bottom:16px;display:inline-block">'
+    +(p.qty>0?p.qty+' disponibili':p.availTxt)+'</span>'
+    +'<div class="modal-actions">'
+    +'<button class="btn btn-terra" onclick="addToQuote(\''+p.id+'\');closeModal()">Aggiungi al preventivo</button>'
+    +'<a class="btn btn-verde" href="https://wa.me/'+WA+'?text='+encodeURIComponent('Buongiorno, vorrei informazioni su: '+p.name+' ('+p.sci+')')+'" target="_blank">WhatsApp</a>'
+    +'</div>';
+  document.getElementById('modal-bg').classList.add('on');
+}
+function closeModal(){document.getElementById('modal-bg').classList.remove('on')}
+
+/* ═══ QUOTE WIZARD — Redesigned with search ═══ */
+var wizStep = 0;
+var quoteSearch = '';
+var quoteCatFilter = 'all';
+
+function addToQuote(id){
+  quoteSelected[id] = true;
+  if(!quoteData[id]) quoteData[id] = {qty:1,note:''};
+  if(curPage==='quote') renderQuote();
+}
+
+function removeFromQuote(id){
+  delete quoteSelected[id];
+  delete quoteData[id];
+  renderQuote();
+}
+
+function getSelectedCount(){
+  return Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]}).length;
+}
+
+function renderQuote() {
+  // Steps bar
+  var steps = ['Aggiungi','Quantità','Dati','Invia'];
+  var sb = document.getElementById('steps-bar');
+  sb.innerHTML = '';
+  steps.forEach(function(s,i){
+    var d = document.createElement('div');
+    d.className = 'step-dot'+(i===wizStep?' on':'')+(i<wizStep?' done':'');
+    d.textContent = s;
+    d.style.cursor = i<wizStep ? 'pointer' : 'default';
+    if(i<wizStep) d.onclick = function(){wizStep=i;renderQuote()};
+    sb.appendChild(d);
+  });
+
+  var ws = document.getElementById('wiz-steps');
+  ws.innerHTML = '';
+  var nav = document.getElementById('wiz-nav');
+  nav.innerHTML = '';
+
+  if(wizStep===0) {
+    /* ── STEP 0: Search + Add ── */
+    var div = document.createElement('div');
+    div.className = 'wiz-step on';
+
+    // Selected items badge bar
+    var selCount = getSelectedCount();
+    var selBar = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">'
+      +'<div><div class="wiz-title">'+tr('q_add_title')+'</div>'
+      +'<div class="wiz-sub" style="margin-bottom:0">'+tr('q_add_sub')+'</div></div>'
+      +(selCount>0?'<div style="background:var(--verde);color:#fff;border-radius:24px;padding:8px 16px;font-size:0.78rem;font-weight:700;white-space:nowrap">'+selCount+' '+tr(selCount===1?'q_selected_1':'q_selected_n')+'</div>':'')
+      +'</div>';
+
+    // Search input
+    var searchBox = '<div style="position:relative;margin-bottom:12px">'
+      +'<input class="form-input" id="q-search" type="search" placeholder="'+tr('q_search_ph')+'" value="'+quoteSearch+'" '
+      +'oninput="quoteSearch=this.value;renderQuoteResults()" style="padding-left:16px;border-radius:24px;font-size:16px">'
+      +'</div>';
+
+    // Category filter chips
+    var chips = '<div class="filters" style="margin-bottom:12px">';
+    CATS.forEach(function(c){
+      chips += '<button class="filt'+(quoteCatFilter===c.id?' on':'')+'" onclick="quoteCatFilter=\''+c.id+'\';quoteSearch=\'\';document.getElementById(\'q-search\').value=\'\';renderQuoteResults()">'
+        +(lang==='it'?c.name:c.name_en)+'</button>';
+    });
+    chips += '</div>';
+
+    // Results container
+    var results = '<div id="q-results" style="max-height:320px;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>';
+
+    // Selected items preview (if any)
+    var selPreview = '';
+    if(selCount > 0){
+      selPreview = '<div style="margin-top:16px;padding-top:16px;border-top:2px solid var(--sabbia2)">'
+        +'<div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--verde);margin-bottom:8px">'+tr('q_in_quote')+' ('+selCount+')</div>'
+        +'<div style="display:flex;flex-wrap:wrap;gap:6px">';
+      Object.keys(quoteSelected).forEach(function(id){
+        if(!quoteSelected[id]) return;
+        var p = PLANTS.find(function(x){return x.id===id});
+        if(!p) return;
+        selPreview += '<div style="display:flex;align-items:center;gap:6px;background:#fff;padding:6px 10px;border-radius:20px;border:1px solid var(--sabbia2);font-size:0.75rem">'
+          +'<img src="'+p.img+'" style="width:24px;height:24px;border-radius:4px;object-fit:cover" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+          +'<span style="font-weight:600">'+p.name+'</span>'
+          +'<span onclick="removeFromQuote(\''+p.id+'\')" style="cursor:pointer;color:#EF4444;font-weight:700;font-size:1rem;line-height:1;padding:0 2px">&times;</span>'
+          +'</div>';
+      });
+      selPreview += '</div></div>';
+
+      // ── CROSS-SELLING / SUGGESTIONS ──
+      var selIds = Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]});
+      var suggestions = getSuggestions(selIds);
+      if(suggestions.length > 0){
+        selPreview += '<div style="margin-top:16px;padding:16px;background:linear-gradient(135deg,#FAFDF5,#F5EDE0);border-radius:12px;border:1px solid var(--sabbia2)">'
+          +'<div style="font-size:0.75rem;font-weight:700;color:var(--terra);margin-bottom:4px">'+tr('q_suggest_title')+'</div>'
+          +'<div style="font-size:0.7rem;color:var(--testo2);margin-bottom:12px">'+tr('q_suggest_sub')+'</div>';
+        suggestions.forEach(function(s){
+          selPreview += '<div style="display:flex;align-items:center;gap:10px;background:#fff;padding:10px;border-radius:8px;margin-bottom:6px">'
+            +'<img src="'+s.img+'" style="width:40px;height:40px;border-radius:6px;object-fit:cover" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+            +'<div style="flex:1;min-width:0">'
+            +'<div style="font-weight:600;font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+s.name+'</div>'
+            +'<div style="font-size:0.68rem;font-style:italic;color:var(--testo2)">'+s.sci+'</div>'
+            +'</div>'
+            +'<button onclick="addToQuote(\''+s.id+'\')" style="background:var(--verde);color:#fff;border:none;padding:6px 12px;border-radius:16px;font-size:0.7rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:var(--body)">'+tr('q_suggest_add')+'</button>'
+            +'</div>';
+        });
+        selPreview += '</div>';
+      }
+    }
+
+    div.innerHTML = selBar + searchBox + chips + results + selPreview;
+    ws.appendChild(div);
+
+    // Render initial results
+    setTimeout(renderQuoteResults, 0);
+
+    // Nav
+    if(selCount > 0){
+      var b = document.createElement('button');
+      b.className='btn btn-terra';b.style.width='100%';b.style.justifyContent='center';b.style.borderRadius='12px';
+      b.innerHTML = tr('q_continue')+' '+selCount+' '+tr('q_species')+' →';
+      b.onclick=function(){wizStep=1;renderQuote()};
+      nav.appendChild(b);
+    }
+
+  } else if(wizStep===1) {
+    /* ── STEP 1: Quantities ── */
+    var div = document.createElement('div');
+    div.className = 'wiz-step on';
+    div.innerHTML = '<div class="wiz-title">'+tr('q_qty_title')+'</div><div class="wiz-sub">'+tr('q_qty_sub')+'</div>';
+    
+    Object.keys(quoteSelected).forEach(function(id){
+      if(!quoteSelected[id]) return;
+      var p = PLANTS.find(function(x){return x.id===id});
+      if(!p) return;
+      if(!quoteData[id]) quoteData[id]={qty:1,note:''};
+
+      var row = document.createElement('div');
+      row.style.cssText = 'background:#fff;border-radius:10px;padding:14px;margin-bottom:10px';
+      row.innerHTML = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
+        +'<img src="'+p.img+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+        +'<div style="flex:1"><div style="font-weight:600;font-size:0.88rem">'+p.name+'</div><div style="font-size:0.72rem;font-style:italic;color:var(--testo2)">'+p.sci+'</div></div>'
+        +'<div style="display:flex;align-items:center;gap:6px">'
+        +'<button onclick="adjQty(\''+id+'\',-1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--sabbia2);background:var(--sabbia);cursor:pointer;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center">−</button>'
+        +'<input class="qty-input" type="number" min="1" id="qty-'+id+'" value="'+quoteData[id].qty+'" onchange="quoteData[\''+id+'\'].qty=Math.max(1,parseInt(this.value)||1)" style="width:56px;font-size:16px;border-radius:8px;text-align:center">'
+        +'<button onclick="adjQty(\''+id+'\',1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--verde);background:var(--verde);color:#fff;cursor:pointer;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center">+</button>'
+        +'</div></div>'
+        +'<input class="note-input" placeholder="'+tr('q_note_ph')+'" value="'+(quoteData[id].note||'')+'" '
+        +'onchange="quoteData[\''+id+'\'].note=this.value" '
+        +'style="font-size:16px;border-radius:8px;margin-top:6px">'
+        +(function(){var base=p.sci.split(/[\u2018\u2019']/)[0].trim();if(base.length<6)return'';var rel=PLANTS.filter(function(rp){return rp.id!==p.id&&rp.sci.indexOf(base)===0});if(!rel.length)return'';var h='<div style="margin-top:8px;padding:8px 10px;background:var(--sabbia);border-radius:8px"><div style="font-size:0.65rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--verde);margin-bottom:6px">'+tr('q_also_available')+'</div>';rel.slice(0,4).forEach(function(rp){var added=!!quoteSelected[rp.id];h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;cursor:pointer;touch-action:manipulation" onclick="'+(added?"removeFromQuote":"addToQuote")+"('"+rp.id+"')"+'"><div style="width:20px;height:20px;border-radius:4px;border:2px solid '+(added?'var(--verde)':'var(--sabbia2)')+';background:'+(added?'var(--verde)':'#fff')+';display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#fff;flex-shrink:0">'+(added?'\u2713':'')+'</div><span style="font-size:0.75rem;color:var(--testo2)">'+rp.name+' <em>('+rp.sci+')</em>'+(rp.qty>0?' \u2014 '+rp.qty+' disp.':'')+'</span></div>'});h+='</div>';return h})();
+      div.appendChild(row);
+    });
+    ws.appendChild(div);
+
+    // Nav
+    var b1 = document.createElement('button');
+    b1.className='btn btn-ghost';b1.style.color='var(--testo)';b1.style.borderColor='var(--sabbia2)';b1.style.borderRadius='10px';
+    b1.textContent=tr('q_back');b1.onclick=function(){wizStep=0;renderQuote()};
+    nav.appendChild(b1);
+    var b2 = document.createElement('button');
+    b2.className='btn btn-terra';b2.style.borderRadius='10px';
+    b2.textContent=tr('q_next');b2.onclick=function(){wizStep=2;renderQuote()};
+    nav.appendChild(b2);
+
+  } else if(wizStep===2) {
+    /* ── STEP 2: Customer data ── */
+    var div = document.createElement('div');
+    div.className = 'wiz-step on';
+    div.innerHTML = '<div class="wiz-title">'+tr('q_data_title')+'</div><div class="wiz-sub">'+tr('q_data_sub')+'</div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_name')+' *</label><input class="form-input" id="qname" placeholder="Mario Rossi" style="border-radius:10px"></div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_company')+'</label><input class="form-input" id="qcompany" placeholder="Studio Architettura Rossi" style="border-radius:10px"></div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_vat')+'</label><input class="form-input" id="qvat" placeholder="HR12345678901 / IT01234567890" style="border-radius:10px"></div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_email')+' *</label><input class="form-input" id="qemail" type="email" placeholder="mario@email.com" style="border-radius:10px"></div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_phone')+'</label><input class="form-input" id="qphone" placeholder="+385 99 123 4567" style="border-radius:10px"></div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_country')+'</label><input class="form-input" id="qcountry" placeholder="Croazia" style="border-radius:10px"></div>'
+      +'<div class="form-group"><label class="form-label">'+tr('q_notes')+'</label><textarea class="form-input" id="qnotes" rows="3" placeholder="'+tr('q_notes_ph')+'" style="border-radius:10px;resize:vertical"></textarea></div>';
+    ws.appendChild(div);
+
+    var b1 = document.createElement('button');
+    b1.className='btn btn-ghost';b1.style.color='var(--testo)';b1.style.borderColor='var(--sabbia2)';b1.style.borderRadius='10px';
+    b1.textContent=tr('q_back');b1.onclick=function(){wizStep=1;renderQuote()};
+    nav.appendChild(b1);
+    var b2 = document.createElement('button');
+    b2.className='btn btn-terra';b2.style.borderRadius='10px';
+    b2.textContent=tr('q_generate');b2.onclick=function(){wizStep=3;renderQuote()};
+    nav.appendChild(b2);
+
+  } else if(wizStep===3) {
+    /* ── STEP 3: Summary + Send ── */
+    var div = document.createElement('div');
+    div.className = 'wiz-step on';
+    var html = '<div class="wiz-title">'+tr('q_summary')+'</div>';
+    
+    // Items list
+    html += '<div style="background:#fff;border-radius:10px;overflow:hidden;margin-bottom:16px">';
+    var count = 0;
+    Object.keys(quoteSelected).forEach(function(id){
+      if(!quoteSelected[id]) return;
+      var p = PLANTS.find(function(x){return x.id===id});
+      if(!p) return;
+      var d = quoteData[id]||{qty:1,note:''};
+      count++;
+      html += '<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--sabbia)">'
+        +'<img src="'+p.img+'" style="width:40px;height:40px;border-radius:6px;object-fit:cover" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+        +'<div style="flex:1"><div style="font-weight:600;font-size:0.85rem">'+p.name+'</div>'
+        +(d.note?'<div style="font-size:0.72rem;color:var(--testo2)">'+d.note+'</div>':'')
+        +'</div>'
+        +'<div style="font-weight:700;font-size:0.9rem;color:var(--verde)">x'+d.qty+'</div></div>';
+    });
+    html += '</div>';
+    html += '<div style="text-align:center;font-size:0.82rem;color:var(--testo2);margin-bottom:20px">'+count+' '+tr('q_species_in')+'</div>';
+
+    // Send buttons
+    html += '<a class="btn btn-verde" href="https://wa.me/'+WA+'?text='+encodeURIComponent(buildWAMsg())+'" target="_blank" style="width:100%;justify-content:center;border-radius:10px;margin-bottom:10px;padding:16px">'+tr('q_send_wa')+'</a>';
+    html += '<button class="btn btn-ghost" onclick="emailQuote()" style="width:100%;justify-content:center;border-radius:10px;color:var(--testo);border-color:var(--sabbia2);padding:16px">'+tr('q_send_email')+'</button>';
+    html += '<button class="btn btn-ghost" onclick="generatePDF()" style="width:100%;justify-content:center;border-radius:10px;color:var(--verde);border-color:var(--verde);padding:16px;margin-top:10px">📄 Genera PDF Preventivo</button>';
+    
+    div.innerHTML = html;
+    ws.appendChild(div);
+
+    var b1 = document.createElement('button');
+    b1.className='btn btn-ghost';b1.style.color='var(--testo)';b1.style.borderColor='var(--sabbia2)';b1.style.borderRadius='10px';
+    b1.textContent=tr('q_edit');b1.onclick=function(){wizStep=1;renderQuote()};
+    nav.appendChild(b1);
+  }
+}
+
+function adjQty(id, delta) {
+  if(!quoteData[id]) quoteData[id] = {qty:1,note:''};
+  quoteData[id].qty = Math.max(1, quoteData[id].qty + delta);
+  var inp = document.getElementById('qty-'+id);
+  if(inp) inp.value = quoteData[id].qty;
+}
+
+function renderQuoteResults() {
+  var container = document.getElementById('q-results');
+  if(!container) return;
+  
+  var search = quoteSearch.toLowerCase().trim();
+  var filtered = PLANTS.filter(function(p){
+    // Category filter
+    if(quoteCatFilter !== 'all' && p.cat !== quoteCatFilter) return false;
+    // Search filter
+    if(search){
+      return p.name.toLowerCase().indexOf(search) > -1 
+        || p.sci.toLowerCase().indexOf(search) > -1;
+    }
+    return true;
+  });
+
+  if(search && filtered.length === 0){
+    container.innerHTML = '<div style="text-align:center;padding:32px 16px;color:var(--testo2)">'
+      +'<div style="font-size:1.5rem;margin-bottom:8px">🔍</div>'
+      +'<div style="font-size:0.88rem">'+tr('q_search_no')+' "'+quoteSearch+'"</div>'
+      +'<div style="font-size:0.78rem;margin-top:4px">'+tr('q_search_no_sub')+'</div></div>';
+    return;
+  }
+
+  if(!search && quoteCatFilter === 'all'){
+    container.innerHTML = '<div style="text-align:center;padding:32px 16px;color:var(--testo2)">'
+      +'<div style="font-size:1.5rem;margin-bottom:8px">🌿</div>'
+      +'<div style="font-size:0.88rem">'+tr('q_search_empty')+'</div>'
+      +'<div style="font-size:0.78rem;margin-top:4px">'+tr('q_search_empty_sub')+'</div></div>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(p){
+    var isSel = quoteSelected[p.id];
+    html += '<div onclick="'+(isSel?'removeFromQuote':'addToQuote')+'(\''+p.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:'+(isSel?'#FAFDF5':'#fff')+';border:2px solid '+(isSel?'var(--verde)':'transparent')+';transition:all 0.15s;touch-action:manipulation">'
+      +'<img src="'+p.img+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-weight:600;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'
+      +'<div style="font-size:0.7rem;font-style:italic;color:var(--testo2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.sci+'</div>'
+      
+      +'</div>'
+      +'<div style="flex-shrink:0">'
+      +(isSel
+        ?'<div style="width:32px;height:32px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem">✓</div>'
+        :'<div style="width:32px;height:32px;border-radius:50%;border:2px solid var(--sabbia2);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--verde)">+</div>')
+      +'</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function emailQuote() {
+  var subject = encodeURIComponent('Richiesta Preventivo — Fiera Zagabria 2026');
+  var body = encodeURIComponent(buildWAMsg().replace(/\*/g,''));
+  window.open('mailto:vivaicintolisrl@gmail.com?subject='+subject+'&body='+body);
+}
+
+function generatePDF() {
+  var selIds = Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]});
+  if(selIds.length === 0) return;
+
+  var name = document.getElementById('qname')?.value || '';
+  var company = document.getElementById('qcompany')?.value || '';
+  var email = document.getElementById('qemail')?.value || '';
+  var phone = document.getElementById('qphone')?.value || '';
+  var country = document.getElementById('qcountry')?.value || '';
+  var notes = document.getElementById('qnotes')?.value || '';
+  var today = new Date().toLocaleDateString('it-IT');
+
+  var rows = '';
+  var totalQty = 0;
+  selIds.forEach(function(id, idx){
+    var p = PLANTS.find(function(x){return x.id===id});
+    if(!p) return;
+    var d = quoteData[id]||{qty:1,note:''};
+    totalQty += d.qty;
+    rows += '<tr style="border-bottom:1px solid #E8DCC8">'
+      +'<td style="padding:10px 12px;font-size:11px">'+(idx+1)+'</td>'
+      +'<td style="padding:10px 12px"><strong style="font-size:12px">'+p.name+'</strong><br><em style="font-size:10px;color:#666">'+p.sci+'</em>'
+      +(d.note?'<br><span style="font-size:10px;color:#888">'+d.note+'</span>':'')+'</td>'
+      +'<td style="padding:10px 12px;text-align:center;font-size:12px">'+d.qty+'</td>'
+      +'<td style="padding:10px 12px;text-align:center;font-size:10px;color:#666">'+(p.qty>0?p.qty+' disp.':p.availTxt)+'</td>'
+      +'</tr>';
+  });
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Preventivo Vivai Cintoli</title>'
+    +'<style>@page{size:A4;margin:20mm}body{font-family:Helvetica,Arial,sans-serif;color:#2C2C2C;margin:0;padding:0;font-size:12px;line-height:1.5}'
+    +'table{width:100%;border-collapse:collapse}th{text-align:left}@media print{.no-print{display:none}}</style></head><body>'
+    // Header
+    +'<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #4A5D23;padding-bottom:16px;margin-bottom:24px">'
+    +'<div><div style="font-size:22px;font-weight:700;color:#3A4A1B">VIVAI CINTOLI</div>'
+    +'<div style="font-size:10px;color:#666;margin-top:2px">C.da Caselunghe, 70 — 97018 Cava d\'Aliga (RG) — Sicilia, Italia</div>'
+    +'<div style="font-size:10px;color:#666">Tel: +39 351 671 5669 — Email: vivaicintolisrl@gmail.com</div></div>'
+    +'<div style="text-align:right"><div style="font-size:14px;font-weight:700;color:#C4623A">PREVENTIVO</div>'
+    +'<div style="font-size:10px;color:#666">Data: '+today+'</div>'
+    +'<div style="font-size:10px;color:#666">Rif: Zagreb 2026</div></div></div>'
+    // Client info
+    +'<div style="display:flex;gap:24px;margin-bottom:24px">'
+    +'<div style="flex:1;background:#F5EDE0;padding:16px;border-radius:6px">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#4A5D23;margin-bottom:8px">Richiedente</div>'
+    +(name?'<div style="font-size:12px;font-weight:600">'+name+'</div>':'')
+    +(company?'<div style="font-size:11px;color:#666">'+company+'</div>':'')+(document.getElementById('qvat')&&document.getElementById('qvat').value?'<div style="font-size:11px;color:#666">P.IVA/VAT: '+document.getElementById('qvat').value+'</div>':'')
+    +(email?'<div style="font-size:11px;color:#666">'+email+'</div>':'')
+    +(phone?'<div style="font-size:11px;color:#666">'+phone+'</div>':'')
+    +(country?'<div style="font-size:11px;color:#666">'+country+'</div>':'')
+    +'</div>'
+    +'<div style="flex:1;background:#FAFDF5;padding:16px;border-radius:6px;border:1px solid #4A5D2330">'
+    +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#4A5D23;margin-bottom:8px">Riepilogo</div>'
+    +'<div style="font-size:12px"><strong>'+selIds.length+'</strong> specie selezionate</div>'
+    +'<div style="font-size:12px"><strong>'+totalQty+'</strong> piante totali</div>'
+    +(notes?'<div style="font-size:11px;color:#666;margin-top:8px"><em>'+notes+'</em></div>':'')
+    +'</div></div>'
+    // Table
+    +'<table><thead><tr style="background:#3A4A1B;color:#fff">'
+    +'<th style="padding:10px 12px;font-size:10px;width:30px">#</th>'
+    +'<th style="padding:10px 12px;font-size:10px">Specie</th>'
+    +'<th style="padding:10px 12px;font-size:10px;text-align:center;width:60px">Qtà</th>'
+    +'<th style="padding:10px 12px;font-size:10px;text-align:center;width:80px">Stock</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>'
+    // Footer
+    +'<div style="margin-top:32px;padding-top:16px;border-top:2px solid #E8DCC8;display:flex;justify-content:space-between">'
+    +'<div style="font-size:10px;color:#888">Questo preventivo è indicativo e non vincolante.<br>I prezzi saranno confermati dall\'ufficio commerciale.</div>'
+    +'<div style="text-align:right;font-size:10px;color:#888">Vivai Cintoli Srl — P.IVA: IT01234567890<br>Fiera Internazionale del Verde — Zagabria 2026</div></div>'
+    // Print button
+    +'<div class="no-print" style="text-align:center;margin-top:24px">'
+    +'<button onclick="window.print()" style="padding:12px 32px;background:#4A5D23;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:Helvetica">🖨️ Stampa / Salva PDF</button></div>'
+    +'</body></html>';
+
+  var win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+}
+
+function buildWAMsg(){
+  var lines = ['*PREVENTIVO — Vivai Cintoli*','Fiera Zagabria 2026 — Stand B-14',''];
+  Object.keys(quoteSelected).forEach(function(id){
+    if(!quoteSelected[id]) return;
+    var p = PLANTS.find(function(x){return x.id===id});
+    if(!p) return;
+    var d = quoteData[id]||{qty:1,note:''};
+    lines.push('• '+p.name+' ('+p.sci+') x'+d.qty+(d.note?' — '+d.note:''));
+  });
+  lines.push('');
+  var name=document.getElementById('qname');
+  if(name&&name.value) lines.push('Richiedente: '+name.value);
+  var comp=document.getElementById('qcompany');
+  if(comp&&comp.value) lines.push('Azienda: '+comp.value);
+  var vat=document.getElementById('qvat');
+  if(vat&&vat.value) lines.push('P.IVA/VAT: '+vat.value);
+  var email=document.getElementById('qemail');
+  if(email&&email.value) lines.push('Email: '+email.value);
+  var notes=document.getElementById('qnotes');
+  if(notes&&notes.value) lines.push('Note: '+notes.value);
+  return lines.join('\n');
+}
+
+/* ═══ AI FLORA CHAT ═══ */
+function initChat(){
+  updateStats();
+  addBotMsg(tr('chat_welcome'),
+    [tr('chat_qr1'),tr('chat_qr2'),tr('chat_qr3'),tr('chat_qr4')]);
+}
+
+function addBotMsg(text, quickReplies){
+  var msgs = document.getElementById('cmsgs');
+  var div = document.createElement('div');
+  div.className = 'cmsg bot';
+  div.innerHTML = '<div class="cmsg-bubble">'+text+'</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  var qr = document.getElementById('qrs');
+  qr.innerHTML = '';
+  if(quickReplies){
+    quickReplies.forEach(function(r){
+      var btn = document.createElement('button');
+      btn.className='qr';btn.textContent=r;
+      btn.onclick=function(){sendUserMsg(r)};
+      qr.appendChild(btn);
+    });
+  }
+}
+
+function addUserMsg(text){
+  var msgs = document.getElementById('cmsgs');
+  var div = document.createElement('div');
+  div.className = 'cmsg usr';
+  div.innerHTML = '<div class="cmsg-bubble">'+text+'</div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  document.getElementById('qrs').innerHTML = '';
+}
+
+function sendMsg(){
+  var inp = document.getElementById('cinp');
+  if(!inp.value.trim()) return;
+  sendUserMsg(inp.value.trim());
+  inp.value = '';
+}
+
+function sendUserMsg(text){
+  addUserMsg(text);
+  setTimeout(function(){ floraRespond(text) }, 600);
+}
+
+function floraRespond(text){
+  var t = text.toLowerCase();
+  var response = '';
+  var qr = [];
+  var handled = false;
+
+  var langNames = {it:'italiano',en:'English',hr:'hrvatski',de:'Deutsch'};
+  var fl = {
+    gv:{it:'Ottima idea! Con <strong>Garden Vision AI</strong> puoi vedere come diventerebbe il tuo giardino. Ti porto lì! 🏡✨',en:'Great idea! With <strong>Garden Vision AI</strong> you can see how your garden would look. Taking you there! 🏡✨',hr:'Odlična ideja! S <strong>Garden Vision AI</strong> možete vidjeti kako bi vaš vrt izgledao! 🏡✨',de:'Tolle Idee! Mit <strong>Garden Vision AI</strong> sehen Sie Ihren Garten in Echtzeit! 🏡✨'},
+    arch:{it:'Benvenuto! Vivai Cintoli è il partner ideale per gli architetti del paesaggio. Offriamo consulenza botanica, oltre 400 specie mediterranee, supporto tecnico e logistica dedicata in tutta Europa. Che tipo di progetto stai seguendo?',en:'Welcome! Vivai Cintoli is the ideal partner for landscape architects. We offer botanical consulting, over 400 Mediterranean species, technical support and dedicated logistics across Europe. What project are you working on?',hr:'Dobrodošli! Vivai Cintoli je idealan partner za krajobrazne arhitekte. Nudimo botaničko savjetovanje, preko 400 mediteranskih vrsta i logistiku za cijelu Europu. Na kakvom projektu radite?',de:'Willkommen! Vivai Cintoli ist der ideale Partner für Landschaftsarchitekten. Wir bieten botanische Fachberatung, über 400 mediterrane Arten und Logistik in ganz Europa. An welchem Projekt arbeiten Sie?'},
+    hotel:{it:'Per strutture ricettive: <strong>Phoenix canariensis</strong> per ingressi, <strong>Olivo</strong> scultoree, <strong>Cycas</strong> per terrazze, <strong>Agave</strong> decorative. Servizio chiavi in mano completo.',en:'For hospitality: <strong>Phoenix canariensis</strong> for entrances, sculptural <strong>Olive trees</strong>, <strong>Cycas</strong> for terraces, <strong>Agave</strong> for decoration. Complete turnkey service.',hr:'Za ugostiteljstvo: <strong>Phoenix canariensis</strong> za ulaze, <strong>Masline</strong>, <strong>Cycas</strong> za terase. Kompletna usluga ključ u ruke.',de:'Für Hotels: <strong>Phoenix canariensis</strong> für Eingänge, <strong>Olivenbäume</strong>, <strong>Cycas</strong> für Terrassen. Schlüsselfertiger Service.'},
+    coast:{it:'Per giardino costiero: <strong>Olivo</strong> (resistente alla salsedine), <strong>Agave</strong>, <strong>Cycas revoluta</strong>, e <strong>Cisto</strong>. Tutte nel nostro vivaio!',en:'For coastal gardens: <strong>Olive</strong> (salt-resistant), <strong>Agave</strong>, <strong>Cycas revoluta</strong>, and <strong>Cistus</strong>. All available!',hr:'Za obalni vrt: <strong>Maslina</strong>, <strong>Agava</strong>, <strong>Cycas revoluta</strong> i <strong>Cistus</strong>.',de:'Für Küstengärten: <strong>Olive</strong>, <strong>Agave</strong>, <strong>Cycas revoluta</strong> und <strong>Cistus</strong>.'},
+    garden:{it:'Per il tuo giardino possiamo creare un ambiente unico! Che dimensione ha? Pieno sole o ombra? Prova <strong>Garden Vision</strong> per un rendering!',en:'We can create a unique setting for your garden! How large? Full sun or shade? Try <strong>Garden Vision</strong> for a rendering!',hr:'Možemo stvoriti jedinstven ambijent! Koliki je prostor? Isprobajte <strong>Garden Vision</strong>!',de:'Wir schaffen eine einzigartige Umgebung! Wie groß? Probieren Sie <strong>Garden Vision</strong>!'},
+    quote:{it:'Ti porto al wizard preventivo — gratuito e senza impegno! 📋',en:'Taking you to the quote wizard — free, no commitment! 📋',hr:'Vodim vas do čarobnjaka za ponudu — besplatno! 📋',de:'Zum Angebots-Assistenten — kostenlos und unverbindlich! 📋'},
+    info:{it:'Posso consigliarti piante per giardini, terrazze, hotel, climi secchi... Dimmi il tuo progetto!',en:'I can recommend plants for gardens, terraces, hotels, dry climates... Tell me about your project!',hr:'Mogu preporučiti biljke za vrtove, terase, hotele... Recite mi o projektu!',de:'Ich empfehle Pflanzen für Gärten, Terrassen, Hotels... Erzählen Sie mir von Ihrem Projekt!'},
+    greet:{it:'Ciao! Benvenuto allo stand Vivai Cintoli 🌿 Sono Flora. Come posso aiutarti?',en:'Hello! Welcome to Vivai Cintoli 🌿 I\'m Flora. How can I help?',hr:'Bok! Dobrodošli na štand Vivai Cintoli 🌿 Ja sam Flora. Kako vam mogu pomoći?',de:'Hallo! Willkommen bei Vivai Cintoli 🌿 Ich bin Flora. Wie kann ich helfen?'},
+    thanks:{it:'Di nulla! Sono qui per qualsiasi domanda. 🌿',en:'You\'re welcome! I\'m here for any questions. 🌿',hr:'Nema na čemu! Tu sam za pitanja. 🌿',de:'Gerne! Ich bin für Fragen da. 🌿'},
+    fallback:{it:'Posso aiutarti a scegliere le specie giuste. Dimmi di più, o prova <strong>Garden Vision AI</strong>!',en:'I can help you choose the right species. Tell me more, or try <strong>Garden Vision AI</strong>!',hr:'Mogu vam pomoći odabrati prave vrste. Isprobajte <strong>Garden Vision AI</strong>!',de:'Ich helfe bei der Artenwahl. Probieren Sie <strong>Garden Vision AI</strong>!'},
+  };
+  function flr(key){return fl[key]?fl[key][lang]||fl[key].it:''}
+
+  // ── PRIORITY 1: Garden Vision / Rendering triggers ──
+  if(t.indexOf('garden vision')>-1 || t.indexOf('rendering')>-1 || t.indexOf('render')>-1 || t.indexOf('vedere come')>-1 || t.indexOf('visualizzare')>-1 || t.indexOf('visualizza')>-1 || t.indexOf('prova garden')>-1 || t.indexOf('come starebbe')>-1 || t.indexOf('anteprima')>-1 || t.indexOf('progetto visivo')>-1 || t.indexOf('simulazione')>-1 || t.indexOf('mockup')>-1){
+    response = flr('gv');
+    qr = [];
+    setTimeout(function(){ showFloraTab('gv'); }, 1200);
+    handled = true;
+  }
+
+  // ── PRIORITY 2: Specific plant match ──
+  if(!handled){
+    var matched = PLANTS.filter(function(p){
+      return t.indexOf(p.name.toLowerCase())>-1 || t.indexOf(p.sci.toLowerCase())>-1 || (p.name.toLowerCase().indexOf(t.replace(/info su |informazioni su |dimmi di |parlami di /g,'').trim())>-1 && t.length > 3);
+    });
+
+    if(matched.length>0){
+      var p = matched[0];
+      response = 'Il <strong>'+p.name+'</strong> (<em>'+p.sci+'</em>) è una delle nostre specie di punta. '
+        +(p.qty>0?'Ne abbiamo <strong>'+p.qty+' esemplari disponibili</strong> in vivaio. ':'È attualmente in fase di preparazione. ')
+        
+        
+        +' Vuoi aggiungerlo al preventivo?';
+      qr = ['Aggiungi al preventivo','Altre piante simili','🏡 Garden Vision','Info spedizione'];
+      handled = true;
+    }
+  }
+
+  // ── PRIORITY 3: Intent matching ──
+  if(!handled){
+
+    // Architect / professional
+    if(t.indexOf('architett')>-1 || t.indexOf('architect')>-1 || t.indexOf('paesaggist')>-1 || t.indexOf('landscape')>-1 || t.indexOf('professionista')>-1 || t.indexOf('professional')>-1 || t.indexOf('krajobraz')>-1 || t.indexOf('landschaft')>-1 || t.indexOf('studio')>-1){
+      response = flr('arch');
+      qr = lang==='it'?['Progetto hotel/resort','Giardino privato','🏡 Garden Vision']:lang==='en'?['Hotel project','Private garden','🏡 Garden Vision']:lang==='hr'?['Hotel projekt','Privatni vrt','🏡 Garden Vision']:['Hotelprojekt','Privatgarten','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Hotel / resort
+    else if(t.indexOf('hotel')>-1 || t.indexOf('resort')>-1 || t.indexOf('struttura')>-1 || t.indexOf('albergo')>-1 || t.indexOf('ricettiv')>-1 || t.indexOf('hospitality')>-1 || t.indexOf('ugostiteljstv')>-1){
+      response = flr('hotel');
+      qr = lang==='it'?['🏡 Garden Vision','Chiavi in mano','Richiedi preventivo']:lang==='en'?['🏡 Garden Vision','Turnkey service','Request quote']:lang==='hr'?['🏡 Garden Vision','Ključ u ruke','Zatražite ponudu']:['🏡 Garden Vision','Schlüsselfertig','Angebot anfordern'];
+      handled = true;
+    }
+
+    // Drought / dry / water
+    else if(t.indexOf('siccit')>-1 || t.indexOf('drought')>-1 || t.indexOf('poca acqua')>-1 || t.indexOf('secco')>-1 || t.indexOf('arido')>-1 || t.indexOf('water')>-1 || t.indexOf('irrigazione')>-1 || t.indexOf('suš')>-1 || t.indexOf('trocken')>-1 || t.indexOf('wasser')>-1){
+      var dry = PLANTS.filter(function(p){return p.cat==='succulenta'||p.cat==='cactus'});
+      var dryNames = dry.slice(0,5).map(function(p){return'<strong>'+p.name+'</strong>'}).join(', ');
+      response = {it:'Per giardini con poca acqua consiglio: '+dryNames+'. Tutte adatte al clima secco.',en:'For water-wise gardens I recommend: '+dryNames+'. All naturally drought-adapted.',hr:'Za vrtove s malo vode preporučujem: '+dryNames+'. Sve prilagođene suhoj klimi.',de:'Für wassersparende Gärten empfehle ich: '+dryNames+'. Alle trockenheitsresistent.'}[lang];
+      qr = dry.slice(0,3).map(function(p){return'Info '+p.name}).concat(['🏡 Garden Vision']);
+      handled = true;
+    }
+
+    // Coastal / sea
+    else if(t.indexOf('costier')>-1 || t.indexOf('mare')>-1 || t.indexOf('coast')>-1 || t.indexOf('salsedine')>-1 || t.indexOf('vento')>-1 || t.indexOf('beach')>-1 || t.indexOf('marittim')>-1 || t.indexOf('obaln')>-1 || t.indexOf('küste')>-1 || t.indexOf('meer')>-1){
+      response = flr('coast');
+      qr = ['Info Olivo','Info Agave','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Private garden / villa
+    else if(t.indexOf('villa')>-1 || t.indexOf('privat')>-1 || t.indexOf('casa')>-1 || t.indexOf('giardino')>-1 || t.indexOf('garden')>-1 || t.indexOf('terrazza')>-1 || t.indexOf('balcon')>-1 || t.indexOf('vrt')>-1 || t.indexOf('garten')>-1 || t.indexOf('haus')>-1 || t.indexOf('terasa')>-1){
+      response = flr('garden');
+      qr = lang==='it'?['Pieno sole','Mediterraneo','Terrazza','🏡 Garden Vision']:lang==='en'?['Full sun','Mediterranean','Terrace','🏡 Garden Vision']:lang==='hr'?['Puno sunce','Mediteranski','Terasa','🏡 Garden Vision']:['Volle Sonne','Mediterran','Terrasse','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Palms
+    else if(t.indexOf('palm')>-1){
+      var palms = PLANTS.filter(function(p){return p.cat==='palma'});
+      response = {it:'Le nostre palme tra le più richieste: ',en:'Our palms are among the most requested: ',hr:'Naše palme među najtraženijima: ',de:'Unsere Palmen gehören zu den gefragtesten: '}[lang]
+        +palms.map(function(p){return'<strong>'+p.name+'</strong>'}).join(', ')+'.';
+        +'. La Phoenix canariensis è la scelta classica per giardini maestosi, mentre la Cycas revoluta è perfetta per spazi più contenuti.';
+      qr = palms.slice(0,3).map(function(p){return'Info su '+p.name}).concat(['Richiedi preventivo']);
+      handled = true;
+    }
+
+    // Quote / preventivo
+    else if(t.indexOf('preventivo')>-1 || t.indexOf('quote')>-1 || t.indexOf('prezzo')>-1 || t.indexOf('cost')>-1 || t.indexOf('quanto')>-1 || t.indexOf('price')>-1 || t.indexOf('listino')>-1){
+      response = flr('quote');
+      qr = [];
+      setTimeout(function(){go('quote')},1500);
+      handled = true;
+    }
+
+    // Add to quote
+    else if(t.indexOf('aggiungi')>-1 || t.indexOf('add')>-1){
+      response = 'Per aggiungere piante al preventivo, vai nella sezione <strong>Catalogo</strong> e tocca la pianta che ti interessa, oppure usa il <strong>Wizard Preventivo</strong> per cercarle direttamente. Vuoi che ti accompagni?';
+      qr = ['Vai al catalogo','Vai al preventivo','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Shipping / delivery
+    else if(t.indexOf('spediz')>-1 || t.indexOf('shipping')>-1 || t.indexOf('consegna')>-1 || t.indexOf('trasporto')>-1 || t.indexOf('deliver')>-1 || t.indexOf('dostav')>-1 || t.indexOf('liefer')>-1){
+      response = {it:'Spediamo in tutta Europa con logistica specializzata per piante vive. Per la Croazia: 3-5 giorni lavorativi. Camion dedicati per piante grandi, corriere espresso per piante piccole.',en:'We ship across Europe with specialized live plant logistics. To Croatia: 3-5 business days. Dedicated trucks for large plants, express courier for small ones.',hr:'Dostavljamo po cijeloj Europi specijaliziranom logistikom za žive biljke. Za Hrvatsku: 3-5 radnih dana.',de:'Wir liefern europaweit mit spezialisierter Pflanzenlogistik. Nach Kroatien: 3-5 Werktage.'}[lang];
+      qr = lang==='it'?['Richiedi preventivo','Catalogo']:lang==='en'?['Request quote','Catalog']:lang==='hr'?['Zatražite ponudu','Katalog']:['Angebot anfordern','Katalog'];
+      handled = true;
+    }
+
+    // Info / help / generic questions
+    else if(t.indexOf('informazion')>-1 || t.indexOf('info')>-1 || t.indexOf('aiut')>-1 || t.indexOf('help')>-1 || t.indexOf('vorrei')>-1 || t.indexOf('cerco')>-1 || t.indexOf('bisogno')>-1 || t.indexOf('consiglio')>-1 || t.indexOf('sugger')>-1){
+      response = flr('info');
+      qr = lang==='it'?['Sono un architetto','Ho un giardino','Piante per hotel','🏡 Garden Vision']:lang==='en'?['I\'m an architect','I have a garden','Plants for hotel','🏡 Garden Vision']:lang==='hr'?['Ja sam arhitekt','Imam vrt','Biljke za hotel','🏡 Garden Vision']:['Ich bin Architekt','Ich habe einen Garten','Pflanzen für Hotel','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Greetings
+    else if(t.indexOf('ciao')>-1 || t.indexOf('buongiorno')>-1 || t.indexOf('salve')>-1 || t.indexOf('hello')>-1 || t.indexOf('hi ')>-1 || t === 'hi' || t.indexOf('buonasera')>-1 || t.indexOf('hey')>-1 || t.indexOf('bok')>-1 || t.indexOf('dobar')>-1 || t.indexOf('hallo')>-1 || t.indexOf('guten')>-1){
+      response = flr('greet');
+      qr = lang==='it'?['Sono un architetto','Ho un giardino','Piante per hotel','🏡 Garden Vision']:lang==='en'?['I\'m an architect','Private garden','Plants for hotel','🏡 Garden Vision']:lang==='hr'?['Ja sam arhitekt','Privatni vrt','Biljke za hotel','🏡 Garden Vision']:['Ich bin Architekt','Privatgarten','Pflanzen für Hotel','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Thanks
+    else if(t.indexOf('grazie')>-1 || t.indexOf('thanks')>-1 || t.indexOf('thank')>-1 || t.indexOf('ottimo')>-1 || t.indexOf('perfetto')>-1 || t.indexOf('hvala')>-1 || t.indexOf('danke')>-1 || t.indexOf('great')>-1 || t.indexOf('perfect')>-1){
+      response = flr('thanks');
+      qr = lang==='it'?['Catalogo','Preventivo','🏡 Garden Vision']:lang==='en'?['Catalog','Quote','🏡 Garden Vision']:lang==='hr'?['Katalog','Ponuda','🏡 Garden Vision']:['Katalog','Angebot','🏡 Garden Vision'];
+      handled = true;
+    }
+
+    // Chiavi in mano / turnkey
+    else if(t.indexOf('chiavi in mano')>-1 || t.indexOf('turnkey')>-1 || t.indexOf('tutto incluso')>-1 || t.indexOf('completo')>-1 || t.indexOf('ključ u ruke')>-1 || t.indexOf('schlüsselfertig')>-1 || t.indexOf('all inclusive')>-1){
+      response = {it:'Il nostro servizio <strong>Chiavi in Mano</strong>: progettazione, selezione piante, fornitura materiali e messa in opera con 48 professionisti. Un unico interlocutore dalla A alla Z.',en:'Our <strong>Turnkey Service</strong>: design, plant selection, material supply and installation with 48 professionals. One single partner from A to Z.',hr:'Naša usluga <strong>Ključ u ruke</strong>: projektiranje, odabir biljaka, dobava materijala i instalacija s 48 profesionalaca.',de:'Unser <strong>Schlüsselfertiger Service</strong>: Planung, Pflanzenauswahl, Materiallieferung und Installation mit 48 Fachleuten.'}[lang];
+      qr = ['Richiedi preventivo','🏡 Garden Vision','Catalogo piante'];
+      handled = true;
+    }
+
+    // Catalog / browse
+    else if(t.indexOf('catalogo')>-1 || t.indexOf('catalog')>-1 || t.indexOf('sfoglia')>-1 || t.indexOf('browse')>-1 || t.indexOf('piante disponib')>-1){
+      response = 'Ti porto al catalogo! Puoi filtrare per categoria: Alberi, Palme, Arbusti da fiore, Succulente e molte altre. 🌿';
+      qr = [];
+      setTimeout(function(){go('catalog')},1200);
+      handled = true;
+    }
+  }
+
+  // ── FALLBACK ──
+  if(!handled){
+    response = flr('fallback');
+    qr = lang==='it'?['Sono un architetto','Ho un giardino','Piante per hotel','Piante per secco','🏡 Garden Vision']:lang==='en'?['I\'m an architect','I have a garden','Plants for hotel','Drought-resistant','🏡 Garden Vision']:lang==='hr'?['Ja sam arhitekt','Imam vrt','Biljke za hotel','Otporne na sušu','🏡 Garden Vision']:['Ich bin Architekt','Ich habe einen Garten','Pflanzen für Hotel','Trockenheitsresistent','🏡 Garden Vision'];
+  }
+
+  addBotMsg(response, qr);
+}
+
+/* ═══ INIT ═══ */
+// renderCatalog() called by catalog loader above
+
+/* ═══════════════════════════════════════
+   GARDEN VISION AI
+═══════════════════════════════════════ */
+
+// ⚙️ API — Mapbox token served via /api/mapbox, OpenAI proxied via /api/openai
+// Chiavi in Vercel Environment Variables, mai esposte al client.
+var MAPBOX_KEY = '';
+
+(function(){
+  fetch('/api/mapbox')
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ if(d && d.token) MAPBOX_KEY = d.token; })
+    .catch(function(){});
+})();
+
+var gvStep = 1;
+var gvSelectedStyle = 'mediterranean';
+var gvCapturedImage = null; // base64
+var gvMap = null;
+var gvGeneratedImage = null;
+
+var GV_STYLES = {
+  mediterranean: {
+    name: 'Mediterraneo',
+    prompt: 'Transform this outdoor area into a lush Mediterranean garden landscape. Add mature Olea europaea (olive trees) with sculptural twisted trunks, Cupressus sempervirens (Italian cypress) for vertical accents, masses of Lavandula angustifolia (lavender) as ground cover, Rosmarinus officinalis (rosemary) borders, and Bougainvillea climbing on walls. Include natural stone pathways, terracotta pots, and gravel mulch. Warm golden sunlight, photorealistic landscape architecture rendering.',
+    plants: ['olivo','cisto','lavatera']
+  },
+  tropical: {
+    name: 'Tropicale',
+    prompt: 'Transform this outdoor area into a tropical paradise garden. Add tall Phoenix canariensis palms, Arecastrum romanzoffianum (Queen palms), Cycas revoluta near seating areas, Strelitzia reginae (Bird of Paradise) clusters, and lush Bougainvillea in vivid magenta. Include a natural stone water feature, tropical undergrowth, and dramatic uplighting. Warm evening light, photorealistic landscape rendering.',
+    plants: ['phoenix','arecastrum','cycas']
+  },
+  succulent: {
+    name: 'Succulento',
+    prompt: 'Transform this outdoor area into a modern succulent garden. Add large Agave americana and Agave attenuata as focal points, clusters of Aeonium arboreum with dark rosettes, Euphorbia tirucalli (pencil cactus) for height, and Aloe varieties as border plants. Include gravel pathways, decorative volcanic rocks, and Corten steel planters. Bright daylight, clean modern aesthetic, photorealistic landscape rendering.',
+    plants: ['agave','aeonium','euphorbia-t']
+  },
+  formal: {
+    name: 'Formale',
+    prompt: 'Transform this outdoor area into an elegant formal garden. Add precisely shaped Quercus ilex (holm oak) topiary spheres, clipped Buxus hedging borders, symmetrical Cupressus sempervirens columns flanking pathways, Cistus ground cover, and a central ornamental feature. Include geometric stone paving, manicured lawn panels, and classical stone urns. Soft morning light, photorealistic architectural rendering.',
+    plants: ['quercia','cisto']
+  }
+};
+
+function showFloraTab(tab) {
+  document.getElementById('flora-chat').style.display = tab === 'chat' ? 'block' : 'none';
+  document.getElementById('flora-gv').style.display = tab === 'gv' ? 'block' : 'none';
+  document.getElementById('tab-chat').className = 'filt' + (tab === 'chat' ? ' on' : '');
+  document.getElementById('tab-gv').className = 'filt' + (tab === 'gv' ? ' on' : '');
+  if (tab === 'gv') gvInit();
+}
+
+function gvInit() {
+  if (MAPBOX_KEY && !gvMap) {
+    // Load Mapbox GL JS
+    if (!document.getElementById('mapbox-css')) {
+      var css = document.createElement('link');
+      css.id = 'mapbox-css';
+      css.rel = 'stylesheet';
+      css.href = 'https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css';
+      document.head.appendChild(css);
+      var js = document.createElement('script');
+      js.src = 'https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js';
+      js.onload = function() { initMapbox(); };
+      document.head.appendChild(js);
+    } else if (typeof mapboxgl !== 'undefined') {
+      initMapbox();
+    }
+    document.getElementById('gv-map-container').style.display = 'block';
+    document.getElementById('gv-no-api').style.display = 'none';
+  } else if (!MAPBOX_KEY) {
+    document.getElementById('gv-map-container').style.display = 'none';
+    document.getElementById('gv-no-api').style.display = 'block';
+  }
+}
+
+function initMapbox() {
+  if (gvMap) return;
+  mapboxgl.accessToken = MAPBOX_KEY;
+  gvMap = new mapboxgl.Map({
+    container: 'gv-map',
+    style: 'mapbox://styles/mapbox/satellite-streets-v12',
+    center: [15.982, 45.815], // Zagreb default
+    zoom: 17,
+    attributionControl: false
+  });
+  gvMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+}
+
+function gvSearchAddress() {
+  var addr = document.getElementById('gv-address').value.trim();
+  if (!addr) return;
+
+  if (MAPBOX_KEY && gvMap) {
+    // Mapbox Geocoding API (free tier included)
+    fetch('/api/mapbox?geocode=' + encodeURIComponent(addr))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.features && data.features.length > 0) {
+          var coords = data.features[0].geometry.coordinates;
+          gvMap.flyTo({ center: coords, zoom: 19, pitch: 0 });
+          new mapboxgl.Marker({ color: '#C4623A' }).setLngLat(coords).addTo(gvMap);
+          document.getElementById('gv-map-container').style.display = 'block';
+        } else {
+          alert('Indirizzo non trovato. Riprova con un indirizzo più specifico.');
+        }
+      })
+      .catch(function() { alert('Errore nella ricerca. Controlla la connessione internet.'); });
+  } else {
+    document.getElementById('gv-no-api').style.display = 'block';
+  }
+}
+
+function gvCaptureView() {
+  if (!gvMap) return;
+  // Capture the map canvas as base64
+  var canvas = gvMap.getCanvas();
+  gvCapturedImage = canvas.toDataURL('image/jpeg', 0.92);
+  gvGoStep(2);
+}
+
+function gvHandleUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    gvCapturedImage = e.target.result;
+    gvGoStep(2);
+  };
+  reader.readAsDataURL(file);
+}
+
+function gvGoStep(step) {
+  gvStep = step;
+  document.getElementById('gv-step1').style.display = step === 1 ? 'block' : 'none';
+  document.getElementById('gv-step2').style.display = step === 2 ? 'block' : 'none';
+  document.getElementById('gv-step3').style.display = step === 3 ? 'block' : 'none';
+
+  // Update step indicators
+  ['gvs1','gvs2','gvs3'].forEach(function(id, i) {
+    var el = document.getElementById(id);
+    el.className = 'step-dot' + ((i+1) === step ? ' on' : '') + ((i+1) < step ? ' done' : '');
+  });
+
+  if (step === 2 && gvCapturedImage) {
+    document.getElementById('gv-preview').src = gvCapturedImage;
+  }
+}
+
+function gvSelectStyle(el, style) {
+  gvSelectedStyle = style;
+  document.querySelectorAll('.gv-style-card').forEach(function(c) { c.classList.remove('on'); });
+  el.classList.add('on');
+}
+
+async function gvGenerate() {
+  if (!gvCapturedImage) {
+    alert('Prima cattura una vista o carica una foto.');
+    return;
+  }
+
+  gvGoStep(3);
+  document.getElementById('gv-loading').style.display = 'block';
+  document.getElementById('gv-result').style.display = 'none';
+  document.getElementById('gv-error').style.display = 'none';
+
+  var prog = document.getElementById('gv-progress');
+  prog.style.width = '0%';
+  var progInterval = setInterval(function() {
+    var w = parseInt(prog.style.width) || 0;
+    if (w < 90) prog.style.width = (w + Math.random() * 6) + '%';
+  }, 1000);
+
+  try {
+    var style = GV_STYLES[gvSelectedStyle];
+    var customPrompt = document.getElementById('gv-custom-prompt').value.trim();
+    var prompt = customPrompt || style.prompt;
+    prompt += ' Maintain the existing building structures, walls, and hardscape. Only transform green and outdoor areas. Photorealistic landscape architecture rendering. Keep the same perspective and lighting.';
+
+    var response = await fetch('/api/openai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: gvCapturedImage, prompt: prompt })
+    });
+
+    clearInterval(progInterval);
+    prog.style.width = '100%';
+
+    if (!response.ok) {
+      var errData = await response.json().catch(function(){ return {}; });
+      throw new Error(errData.error || 'Servizio Garden Vision temporaneamente non disponibile.');
+    }
+
+    var data = await response.json();
+    var generatedImg = data.image; // base64 data URL from proxy
+
+    if (!generatedImg) {
+      throw new Error('Nessuna immagine generata. Riprova con una foto diversa o un prompt diverso.');
+    }
+
+    gvGeneratedImage = generatedImg;
+
+    // Show before/after
+    document.getElementById('gv-img-before').src = gvCapturedImage;
+    document.getElementById('gv-img-after').src = generatedImg;
+    setTimeout(function(){
+      var container = document.getElementById('gv-ba-container');
+      if(container) document.getElementById('gv-img-before').style.width = container.offsetWidth + 'px';
+    }, 100);
+    document.getElementById('gv-loading').style.display = 'none';
+    document.getElementById('gv-result').style.display = 'block';
+
+    // WhatsApp link
+    var waMsg = '*GARDEN VISION — Vivai Cintoli*\nRendering AI — Fiera Zagabria 2026\nStile: ' + style.name + '\nPiante: ' + style.plants.map(function(id){
+      var p = PLANTS.find(function(x){return x.id===id});
+      return p ? p.name : id;
+    }).join(', ');
+    document.getElementById('gv-wa-link').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(waMsg);
+
+    initBASlider();
+
+  } catch (err) {
+    clearInterval(progInterval);
+    document.getElementById('gv-loading').style.display = 'none';
+    document.getElementById('gv-error').style.display = 'block';
+    document.getElementById('gv-error-msg').textContent = err.message || 'Errore nella generazione. Riprova.';
+    console.error('Garden Vision error:', err);
+  }
+}
+
+function initBASlider() {
+  var container = document.getElementById('gv-ba-container');
+  var clip = document.getElementById('gv-ba-clip');
+  var handle = document.getElementById('gv-ba-handle');
+  var isDragging = false;
+
+  function updatePosition(x) {
+    var rect = container.getBoundingClientRect();
+    var pos = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
+    clip.style.width = (pos * 100) + '%';
+    handle.style.left = (pos * 100) + '%';
+  }
+
+  container.addEventListener('mousedown', function(e) { isDragging = true; updatePosition(e.clientX); });
+  window.addEventListener('mousemove', function(e) { if (isDragging) updatePosition(e.clientX); });
+  window.addEventListener('mouseup', function() { isDragging = false; });
+
+  container.addEventListener('touchstart', function(e) { isDragging = true; updatePosition(e.touches[0].clientX); e.preventDefault(); }, { passive: false });
+  container.addEventListener('touchmove', function(e) { if (isDragging) { updatePosition(e.touches[0].clientX); e.preventDefault(); } }, { passive: false });
+  container.addEventListener('touchend', function() { isDragging = false; });
+}
+
+function gvAddToQuote() {
+  var style = GV_STYLES[gvSelectedStyle];
+  style.plants.forEach(function(id) {
+    var found = PLANTS.find(function(p){ return p.id.indexOf(id)>-1 || p.name.toLowerCase().indexOf(id)>-1; });
+    if(found) addToQuote(found.id);
+  });
+  go('quote');
+}
+
+/* ═══ INIT ═══ */
+// renderCatalog() called by catalog loader above
+
+</script>
+</body>
+</html>
