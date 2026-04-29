@@ -647,12 +647,14 @@ function _expandEntry(e) {
       PLANTS = data.map(_expandEntry);
       renderCatalog();
       updateStats();
+      restoreFromURL();
     })
     .catch(function() {
       // Offline / file:// protocol — use fallback
       PLANTS = _FALLBACK.map(_expandEntry);
       renderCatalog();
       updateStats();
+      restoreFromURL();
     });
 })();
 
@@ -1327,9 +1329,20 @@ function shareQuoteLink() {
   var input = document.getElementById('share-link-input');
   if (!box || !input) return;
 
+  // Use SKU as compact key instead of full ID to keep URL short
+  var skuMap = {}; // sku -> qty
+  var noteMap = {}; // sku -> note
+  Object.keys(quoteSelected).forEach(function(id) {
+    if (!quoteSelected[id]) return;
+    var p = PLANTS.find(function(x){ return x.id === id; });
+    if (!p) return;
+    skuMap[p.sku] = (quoteData[id] || {qty:1}).qty;
+    if (quoteData[id] && quoteData[id].note) noteMap[p.sku] = quoteData[id].note;
+  });
+
   var payload = {
-    s: quoteSelected,
-    d: quoteData,
+    k: skuMap,
+    n: noteMap,
     c: {
       name:    (document.getElementById('qname')    ||{}).value||'',
       company: (document.getElementById('qcompany') ||{}).value||'',
@@ -1361,16 +1374,32 @@ function copyShareLink() {
 }
 
 /* ── Restore quote from URL param ── */
-(function restoreFromURL() {
+function restoreFromURL() {
   try {
     var params = new URLSearchParams(location.search);
     var q = params.get('q');
     if (!q) return;
     var payload = JSON.parse(decodeURIComponent(escape(atob(q))));
-    if (payload.s) quoteSelected = payload.s;
-    if (payload.d) quoteData = payload.d;
+
+    // New compact format: k=skuMap, n=noteMap
+    if (payload.k) {
+      Object.keys(payload.k).forEach(function(sku) {
+        var p = PLANTS.find(function(x){ return x.sku === sku; });
+        if (!p) return;
+        quoteSelected[p.id] = true;
+        quoteData[p.id] = {
+          qty: payload.k[sku] || 1,
+          note: (payload.n && payload.n[sku]) || ''
+        };
+      });
+    }
+    // Legacy format: s=selected, d=data
+    else if (payload.s) {
+      quoteSelected = payload.s;
+      quoteData = payload.d || {};
+    }
+
     if (payload.c) {
-      // Fill form fields after DOM is ready
       var fill = function() {
         var map = {qname:'name',qcompany:'company',qemail:'email',qphone:'phone',qcountry:'country',qnotes:'notes'};
         Object.keys(map).forEach(function(id){
@@ -1378,17 +1407,14 @@ function copyShareLink() {
           if (el && payload.c[map[id]]) el.value = payload.c[map[id]];
         });
       };
-      // Delay to ensure wizard renders first
-      setTimeout(fill, 500);
+      setTimeout(fill, 300);
     }
-    // Navigate to quote page
+
     go('quote');
-    // Jump to step 4 summary
-    setTimeout(function(){ wizStep=4; renderQuote(); }, 300);
-    // Clean URL
+    setTimeout(function(){ wizStep=3; renderQuote(); }, 100);
     history.replaceState(null,'',location.pathname);
-  } catch(e) {}
-})();
+  } catch(e) { console.error('restoreFromURL error:', e); }
+}
 
 /* ── Auto-save quote to localStorage ── */
 function saveQuoteToStorage() {
