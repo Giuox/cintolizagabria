@@ -36,7 +36,7 @@ export default async function handler(req) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
+        model: 'gpt-image-2',
         image: imgBase64,
         prompt: prompt,
         n: 1,
