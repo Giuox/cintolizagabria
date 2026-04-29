@@ -1,3 +1,5 @@
+export const config = { runtime: 'edge' };
+
 export default async function handler(req) {
   const token = process.env.MAPBOX_TOKEN;
   if (!token) {
