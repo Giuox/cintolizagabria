@@ -932,12 +932,43 @@ function renderCatalog() {
     });
   }
 
+  // Size words that indicate a variant of a base plant
+  var SIZE_WORDS = ['vaso grande','vaso medio','vaso piccolo','cesta grande','cesta media','cesta piccola','secolare','vaso alto','vaso'];
+
+  // Build size-variant groups: base sci is prefix of child sci + size suffix
+  var sizeChildIds = {};  // childId -> baseId
+  var sizeGroups = {};    // baseId -> [children]
+  filtered.forEach(function(base) {
+    filtered.forEach(function(other) {
+      if (other.id === base.id) return;
+      if (!other.sci.startsWith(base.sci + ' ')) return;
+      var suffix = other.sci.slice(base.sci.length + 1).toLowerCase();
+      var isSize = SIZE_WORDS.some(function(w){ return suffix.indexOf(w) === 0; });
+      if (isSize) {
+        sizeChildIds[other.id] = base.id;
+        if (!sizeGroups[base.id]) sizeGroups[base.id] = [];
+        sizeGroups[base.id].push(other);
+      }
+    });
+  });
+
   filtered.forEach(function(p) {
+    // Skip size children — they appear inside the base card's modal
+    if (sizeChildIds[p.id]) return;
+
+    var sizeVariants = sizeGroups[p.id] || [];
     var card = document.createElement('div');
     card.className = 'pcard';
-    card.onclick = function(){openModal(p)};
+    card.onclick = (function(plant, variants){
+      return function(){ openModalWithSizes(plant, variants); };
+    })(p, sizeVariants);
+
     var catObj = CATS.find(function(c){return c.id===p.cat});
     var catName = catObj ? (lang==='it'?catObj.name:(lang==='en'?catObj.name_en:catObj.name)) : '';
+    var sizeBadge = sizeVariants.length > 0
+      ? '<div style="font-size:0.62rem;color:var(--verde);font-weight:600;margin-top:4px">'+
+        (sizeVariants.length+1)+' dimensioni disponibili</div>'
+      : '';
     card.innerHTML = '<div class="pcard-cat">'+catName+'</div>'
       +'<div class="pcard-img"><img src="'+p.img+'" alt="'+p.name+'" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'"></div>'
       +'<div class="pcard-body">'
@@ -945,6 +976,7 @@ function renderCatalog() {
       +'<div class="pcard-sci">'+p.sci+'</div>'
       +'<span class="pcard-avail '+(p.avail==='available'?'yes':'soon')+'">'
       +(p.qty>0?p.qty+' disp.':p.availTxt)+'</span>'
+      +sizeBadge
       +'</div>';
     grid.appendChild(card);
   });
@@ -974,58 +1006,53 @@ function openModal(p) {
 }
 function closeModal(){document.getElementById('modal-bg').classList.remove('on')}
 
-/* ── Modal for grouped variants ── */
-function openModalGroup(variants) {
-  if (variants.length === 1) { openModal(variants[0]); return; }
-
-  var current = variants[0];
+/* ── Modal with optional size selector ── */
+function openModalWithSizes(p, sizeVariants) {
   var m = document.getElementById('modal');
+  var allSizes = [p].concat(sizeVariants || []);
 
-  function renderModalContent(p) {
-    // Extract label from scientific name
-    function getLabel(plant) {
-      var s = plant.sci;
-      var paren = s.match(/\(([^)]+)\)/);
-      if (paren) return paren[1];
-      var quote = s.match(/['\u2018\u2019]([^'\u2018\u2019]+)['\u2018\u2019]/);
-      if (quote) return quote[1];
-      var parts = s.split(' ');
-      return parts.length > 2 ? parts.slice(2).join(' ') : s;
+  function getSizeLabel(plant) {
+    if (plant.id === p.id) return 'Standard';
+    var suffix = plant.sci.slice(p.sci.length + 1);
+    return suffix.charAt(0).toUpperCase() + suffix.slice(1);
+  }
+
+  function renderContent(current) {
+    var sizeSelect = '';
+    if (allSizes.length > 1) {
+      sizeSelect = '<div style="margin-bottom:16px">'
+        +'<div style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--verde);margin-bottom:6px">Dimensione</div>'
+        +'<select class="form-input" style="border-radius:8px;font-size:0.9rem" onchange="_modalSizeSwitch(this.value)">'
+        + allSizes.map(function(v){
+            return '<option value="'+v.id+'"'+(v.id===current.id?' selected':'')+'>'+getSizeLabel(v)+(v.qty>0?' ('+v.qty+' disp.)':' (esaurito)')+'</option>';
+          }).join('')
+        +'</select></div>';
     }
 
-    var selectOpts = variants.map(function(v) {
-      return '<option value="'+v.id+'"'+(v.id===p.id?' selected':'')+'>'
-        +getLabel(v)+(v.qty>0?' ('+v.qty+' disp.)':' (esaurito)')+'</option>';
-    }).join('');
-
     m.innerHTML = '<button class="modal-close" onclick="closeModal()">&times;</button>'
-      +'<img class="modal-img" src="'+p.img+'" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
-      +'<div class="modal-name">'+p.name+'</div>'
-      +'<div class="modal-sci">'+p.sci+'</div>'
-      +'<div style="margin-bottom:16px">'
-      +'<div style="font-size:0.65rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--verde);margin-bottom:6px">Variante / Dimensione</div>'
-      +'<select class="form-input" style="border-radius:8px;font-size:0.9rem" onchange="openModalGroup_switch(this.value)">'
-      +selectOpts+'</select></div>'
+      +'<img class="modal-img" src="'+current.img+'" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
+      +'<div class="modal-name">'+current.name+'</div>'
+      +'<div class="modal-sci">'+current.sci+'</div>'
+      + sizeSelect
       +'<div class="modal-info">'
-      +'<div class="modal-info-item"><div class="modal-info-label">SKU</div><div class="modal-info-val">'+(p.sku||'—')+'</div></div>'
-      +'<div class="modal-info-item"><div class="modal-info-label">Stock</div><div class="modal-info-val">'+(p.qty>0?p.qty+' disp.':'—')+'</div></div>'
+      +'<div class="modal-info-item"><div class="modal-info-label">SKU</div><div class="modal-info-val">'+(current.sku||'—')+'</div></div>'
+      +'<div class="modal-info-item"><div class="modal-info-label">Stock</div><div class="modal-info-val">'+(current.qty>0?current.qty+' disp.':'—')+'</div></div>'
       +'</div>'
-      +'<span class="pcard-avail '+(p.avail==='available'?'yes':'soon')+'" style="margin-bottom:16px;display:inline-block">'
-      +(p.qty>0?p.qty+' disponibili':'Disponibile a breve')+'</span>'
+      +'<span class="pcard-avail '+(current.avail==='available'?'yes':'soon')+'" style="margin-bottom:16px;display:inline-block">'
+      +(current.qty>0?current.qty+' disponibili':'Disponibile a breve')+'</span>'
       +'<div class="modal-actions">'
-      +'<button class="btn btn-terra" onclick="addToQuote(\''+p.id+'\');closeModal()">Aggiungi al preventivo</button>'
-      +'<a class="btn btn-verde" href="https://wa.me/'+WA+'?text='+encodeURIComponent('Buongiorno, vorrei informazioni su: '+p.name+' ('+p.sci+')')+'" target="_blank">WhatsApp</a>'
+      +'<button class="btn btn-terra" onclick="addToQuote(\''+current.id+'\');closeModal()">Aggiungi al preventivo</button>'
+      +'<a class="btn btn-verde" href="https://wa.me/'+WA+'?text='+encodeURIComponent('Buongiorno, vorrei informazioni su: '+current.name+' ('+current.sci+')')+'" target="_blank">WhatsApp</a>'
       +'</div>';
   }
 
-  // Store variants globally for the switch function
-  window._modalVariants = variants;
-  window.openModalGroup_switch = function(id) {
-    var found = window._modalVariants.find(function(v){ return v.id === id; });
-    if (found) renderModalContent(found);
+  window._modalSizes = allSizes;
+  window._modalSizeSwitch = function(id) {
+    var found = window._modalSizes.find(function(v){ return v.id === id; });
+    if (found) renderContent(found);
   };
 
-  renderModalContent(current);
+  renderContent(p);
   document.getElementById('modal-bg').classList.add('on');
 }
 
