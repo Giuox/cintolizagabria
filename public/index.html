@@ -933,7 +933,8 @@ function renderCatalog() {
   }
 
   // Size words that indicate a variant of a base plant
-  var SIZE_WORDS = ['vaso grande','vaso medio','vaso piccolo','cesta grande','cesta media','cesta piccola','secolare','vaso alto','vaso'];
+  // Handles: plain suffix, ('vaso...'), (Vaso...), 'vaso...', 'Vaso...'
+  var SIZE_RE = /[\s('](vaso|cesta|secolare)/i;
 
   // Build size-variant groups: base sci is prefix of child sci + size suffix
   var sizeChildIds = {};  // childId -> baseId
@@ -941,10 +942,10 @@ function renderCatalog() {
   filtered.forEach(function(base) {
     filtered.forEach(function(other) {
       if (other.id === base.id) return;
-      if (!other.sci.startsWith(base.sci + ' ')) return;
-      var suffix = other.sci.slice(base.sci.length + 1).toLowerCase();
-      var isSize = SIZE_WORDS.some(function(w){ return suffix.indexOf(w) === 0; });
-      if (isSize) {
+      if (!other.sci.startsWith(base.sci)) return;
+      var suffix = other.sci.slice(base.sci.length);
+      if (suffix.length === 0) return;
+      if (SIZE_RE.test(suffix)) {
         sizeChildIds[other.id] = base.id;
         if (!sizeGroups[base.id]) sizeGroups[base.id] = [];
         sizeGroups[base.id].push(other);
@@ -1013,7 +1014,9 @@ function openModalWithSizes(p, sizeVariants) {
 
   function getSizeLabel(plant) {
     if (plant.id === p.id) return 'Standard';
-    var suffix = plant.sci.slice(p.sci.length + 1);
+    var suffix = plant.sci.slice(p.sci.length).trim();
+    // Remove leading delimiters: space, (, '
+    suffix = suffix.replace(/^[\s(']+/, '').replace(/[)']+$/, '');
     return suffix.charAt(0).toUpperCase() + suffix.slice(1);
   }
 
