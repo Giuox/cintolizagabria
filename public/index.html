@@ -1106,6 +1106,36 @@ function renderQuote() {
 
       var row = document.createElement('div');
       row.style.cssText = 'background:#fff;border-radius:10px;padding:14px;margin-bottom:10px';
+
+      // Find all catalog entries with same name (variants + sizes)
+      var siblings = PLANTS.filter(function(rp){ return rp.name === p.name && rp.id !== p.id; });
+      var allOptions = [p].concat(siblings); // current + siblings
+
+      // Extract display label from scientific name (strip genus, keep cultivar/size)
+      function getLabel(plant) {
+        var s = plant.sci;
+        // Extract content in parentheses or quotes
+        var paren = s.match(/\(([^)]+)\)/);
+        if (paren) return paren[1];
+        var quote = s.match(/['\u2018\u2019]([^'\u2018\u2019]+)['\u2018\u2019]/);
+        if (quote) return quote[1];
+        // Fallback: last word(s) after genus
+        var parts = s.split(' ');
+        return parts.length > 2 ? parts.slice(2).join(' ') : s;
+      }
+
+      var skuSelect = '';
+      if (allOptions.length > 1) {
+        skuSelect = '<div style="margin-bottom:8px">'
+          +'<div style="font-size:0.65rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--verde);margin-bottom:4px">Variante / Dimensione</div>'
+          +'<select class="form-input" style="font-size:0.85rem;padding:10px 12px;border-radius:8px" '
+          +'onchange="switchQuoteVariant(\''+id+'\',this.value)">'
+          + allOptions.map(function(opt){
+              return '<option value="'+opt.id+'"'+(opt.id===id?' selected':'')+'>'+getLabel(opt)+(opt.qty>0?' ('+opt.qty+' disp.)':' (esaurito)')+'</option>';
+            }).join('')
+          +'</select></div>';
+      }
+
       row.innerHTML = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">'
         +'<img src="'+p.img+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
         +'<div style="flex:1"><div style="font-weight:600;font-size:0.88rem">'+p.name+'</div><div style="font-size:0.72rem;font-style:italic;color:var(--testo2)">'+p.sci+'</div></div>'
@@ -1114,10 +1144,10 @@ function renderQuote() {
         +'<input class="qty-input" type="number" min="1" id="qty-'+id+'" value="'+quoteData[id].qty+'" onchange="quoteData[\''+id+'\'].qty=Math.max(1,parseInt(this.value)||1)" style="width:56px;font-size:16px;border-radius:8px;text-align:center">'
         +'<button onclick="adjQty(\''+id+'\',1)" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--verde);background:var(--verde);color:#fff;cursor:pointer;font-size:1.1rem;font-weight:700;display:flex;align-items:center;justify-content:center">+</button>'
         +'</div></div>'
+        + skuSelect
         +'<input class="note-input" placeholder="'+tr('q_note_ph')+'" value="'+(quoteData[id].note||'')+'" '
         +'onchange="quoteData[\''+id+'\'].note=this.value" '
-        +'style="font-size:16px;border-radius:8px;margin-top:6px">'
-        +(function(){var base=p.sci.split(/[\u2018\u2019']/)[0].trim();if(base.length<6)return'';var rel=PLANTS.filter(function(rp){return rp.id!==p.id&&rp.sci.indexOf(base)===0});if(!rel.length)return'';var h='<div style="margin-top:8px;padding:8px 10px;background:var(--sabbia);border-radius:8px"><div style="font-size:0.65rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--verde);margin-bottom:6px">'+tr('q_also_available')+'</div>';rel.slice(0,4).forEach(function(rp){var added=!!quoteSelected[rp.id];h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;cursor:pointer;touch-action:manipulation" onclick="'+(added?"removeFromQuote":"addToQuote")+"('"+rp.id+"')"+'"><div style="width:20px;height:20px;border-radius:4px;border:2px solid '+(added?'var(--verde)':'var(--sabbia2)')+';background:'+(added?'var(--verde)':'#fff')+';display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:#fff;flex-shrink:0">'+(added?'\u2713':'')+'</div><span style="font-size:0.75rem;color:var(--testo2)">'+rp.name+' <em>('+rp.sci+')</em>'+(rp.qty>0?' \u2014 '+rp.qty+' disp.':'')+'</span></div>'});h+='</div>';return h})();
+        +'style="font-size:16px;border-radius:8px;margin-top:6px">';
       div.appendChild(row);
     });
     ws.appendChild(div);
@@ -1210,6 +1240,19 @@ function adjQty(id, delta) {
   quoteData[id].qty = Math.max(1, quoteData[id].qty + delta);
   var inp = document.getElementById('qty-'+id);
   if(inp) inp.value = quoteData[id].qty;
+}
+
+function switchQuoteVariant(oldId, newId) {
+  if (oldId === newId) return;
+  var oldData = quoteData[oldId] || {qty:1,note:''};
+  // Add new variant with same qty/note
+  quoteSelected[newId] = true;
+  quoteData[newId] = {qty: oldData.qty, note: oldData.note};
+  // Remove old
+  delete quoteSelected[oldId];
+  delete quoteData[oldId];
+  saveQuoteToStorage();
+  renderQuote();
 }
 
 function renderQuoteResults() {
