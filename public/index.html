@@ -723,17 +723,6 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
       <div class="pf-dots" id="pf-dots"></div>
     </div>
 
-    <!-- MINI GRID -->
-    <div class="pf-grid" id="pf-grid">
-      <div class="pf-mini on" onclick="pfGoTo(0)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/Dione%201.jpg" alt=""><div class="pf-mini-label">01</div></div>
-      <div class="pf-mini" onclick="pfGoTo(1)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/giardino-villa-piscina-01.jpg" alt=""><div class="pf-mini-label">02</div></div>
-      <div class="pf-mini" onclick="pfGoTo(2)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/giardino-storico-scicli-01.jpg" alt=""><div class="pf-mini-label">03</div></div>
-      <div class="pf-mini" onclick="pfGoTo(3)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/villa-ulivi-01.jpg" alt=""><div class="pf-mini-label">04</div></div>
-      <div class="pf-mini" onclick="pfGoTo(4)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/campagna01.jpg" alt=""><div class="pf-mini-label">05</div></div>
-      <div class="pf-mini" onclick="pfGoTo(5)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/opsitalita-siciliana-01.jpg" alt=""><div class="pf-mini-label">06</div></div>
-      <div class="pf-mini" onclick="pfGoTo(6)"><img src="https://www.vivaicintoli.com/Content/Images/uploaded/hotel-siciliano-01.jpg" alt=""><div class="pf-mini-label">07</div></div>
-    </div>
-
     <!-- DETAIL VIEW -->
     <div class="pf-detail" id="pf-detail">
       <button class="pf-detail-back" onclick="closePortfolioDetail()">&larr; Portfolio</button>
@@ -2437,9 +2426,8 @@ function openPortfolioDetail(idx) {
   gallery.innerHTML = p.imgs.map(function(img){
     return '<img src="'+base+img+'.jpg" alt="" onclick="document.getElementById(\'pf-detail-hero\').src=this.src">';
   }).join('');
-  // Show detail, hide slider+grid
+  // Show detail, hide slider
   document.getElementById('pf-slider').style.display = 'none';
-  document.getElementById('pf-grid').style.display = 'none';
   document.getElementById('pf-detail').classList.add('on');
   window.scrollTo(0,0);
   if (pfTimer) clearInterval(pfTimer);
@@ -2447,7 +2435,6 @@ function openPortfolioDetail(idx) {
 
 function closePortfolioDetail() {
   document.getElementById('pf-slider').style.display = '';
-  document.getElementById('pf-grid').style.display = '';
   document.getElementById('pf-detail').classList.remove('on');
   pfStartAuto();
 }
