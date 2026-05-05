@@ -1,14 +1,25 @@
-import { kv } from '@vercel/kv';
-
 export const config = { maxDuration: 30 };
 
-// Generate a short human-readable code like CIN-4827
 function generateCode() {
   const num = Math.floor(1000 + Math.random() * 9000);
   return `CIN-${num}`;
 }
 
 export default async function handler(req, res) {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return res.status(503).json({ error: 'Supabase not configured' });
+  }
+
+  const headers = {
+    'apikey': supabaseKey,
+    'Authorization': `Bearer ${supabaseKey}`,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation',
+  };
+
   // ── SAVE ──
   if (req.method === 'POST') {
     let body;
@@ -27,20 +38,27 @@ export default async function handler(req, res) {
     let code;
     for (let i = 0; i < 5; i++) {
       const candidate = generateCode();
-      const exists = await kv.exists(`quote:${candidate}`);
-      if (!exists) { code = candidate; break; }
+      const checkRes = await fetch(
+        `${supabaseUrl}/rest/v1/quotes?code=eq.${candidate}&select=code`,
+        { headers }
+      );
+      const existing = await checkRes.json();
+      if (!existing.length) { code = candidate; break; }
     }
     if (!code) return res.status(500).json({ error: 'Could not generate unique code' });
 
-    const payload = {
-      plants,
-      client,
-      createdAt: new Date().toISOString(),
-      ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '',
-    };
+    const expiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
 
-    // Store for 90 days
-    await kv.set(`quote:${code}`, JSON.stringify(payload), { ex: 60 * 60 * 24 * 90 });
+    const insertRes = await fetch(`${supabaseUrl}/rest/v1/quotes`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ code, plants, client, expires_at: expiresAt }),
+    });
+
+    if (!insertRes.ok) {
+      const err = await insertRes.json().catch(() => ({}));
+      return res.status(500).json({ error: err.message || 'Insert failed' });
+    }
 
     return res.status(200).json({ code });
   }
@@ -50,17 +68,23 @@ export default async function handler(req, res) {
     const code = (req.query.code || '').toUpperCase().trim();
     if (!code) return res.status(400).json({ error: 'Missing code' });
 
-    const raw = await kv.get(`quote:${code}`);
-    if (!raw) return res.status(404).json({ error: 'Quote not found or expired' });
+    const getRes = await fetch(
+      `${supabaseUrl}/rest/v1/quotes?code=eq.${encodeURIComponent(code)}&select=plants,client,expires_at`,
+      { headers }
+    );
+    const rows = await getRes.json();
 
-    let data;
-    try {
-      data = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    } catch {
-      return res.status(500).json({ error: 'Corrupted data' });
+    if (!rows.length) {
+      return res.status(404).json({ error: 'Quote not found or expired' });
     }
 
-    return res.status(200).json(data);
+    const row = rows[0];
+    // Check expiry
+    if (row.expires_at && new Date(row.expires_at) < new Date()) {
+      return res.status(404).json({ error: 'Quote expired' });
+    }
+
+    return res.status(200).json({ plants: row.plants, client: row.client });
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
