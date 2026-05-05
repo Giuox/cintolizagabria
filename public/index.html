@@ -688,7 +688,7 @@ var TR = {
     q_selected:'selezionat','q_selected_1':'selezionata','q_selected_n':'selezionate',
     q_in_quote:'Nel tuo preventivo',q_continue:'Continua con',q_species:'specie',
     q_qty_title:'Quantit\u00e0 e note',q_qty_sub:'Indica le quantit\u00e0 desiderate per ogni specie.',
-    q_variant_ph:'Seleziona variante...',q_note_ph:'Note aggiuntive...',q_also_available:'Varianti correlate',
+    q_variant_ph:'Seleziona dimensione...',q_note_ph:'Note aggiuntive...',q_also_available:'Varianti correlate',
     q_data_title:'I tuoi dati',q_data_sub:'Per personalizzare il preventivo.',
     q_vat:'Partita IVA / VAT',q_name:'Nome e cognome',q_company:'Azienda',q_email:'Email',q_phone:'Telefono',q_country:'Paese',q_notes:'Note progetto',q_notes_ph:'Descrivi brevemente il tuo progetto...',
     q_summary:'Riepilogo preventivo',q_species_in:'specie nel preventivo',
@@ -723,7 +723,7 @@ var TR = {
     q_selected:'selected','q_selected_1':'selected','q_selected_n':'selected',
     q_in_quote:'In your quote',q_continue:'Continue with',q_species:'species',
     q_qty_title:'Quantity and notes',q_qty_sub:'Enter the desired quantities for each species.',
-    q_variant_ph:'Select variant...',q_note_ph:'Additional notes...',q_also_available:'Related variants',
+    q_variant_ph:'Select size...',q_note_ph:'Additional notes...',q_also_available:'Related variants',
     q_data_title:'Your details',q_data_sub:'To personalize your quote.',
     q_vat:'VAT Number',q_name:'Full name',q_company:'Company',q_email:'Email',q_phone:'Phone',q_country:'Country',q_notes:'Project notes',q_notes_ph:'Briefly describe your project...',
     q_summary:'Quote summary',q_species_in:'species in quote',
@@ -1181,7 +1181,7 @@ function renderQuote() {
     html += '<div style="text-align:center;font-size:0.82rem;color:var(--testo2);margin-bottom:20px">'+count+' '+tr('q_species_in')+'</div>';
 
     // Send buttons
-    html += '<a class="btn btn-verde" href="https://wa.me/'+WA+'?text='+encodeURIComponent(buildWAMsg())+'" target="_blank" style="width:100%;justify-content:center;border-radius:10px;margin-bottom:10px;padding:16px">'+tr('q_send_wa')+'</a>';
+    html += '<button class="btn btn-verde" onclick="sendWAWithPDF()" style="width:100%;justify-content:center;border-radius:10px;margin-bottom:10px;padding:16px">📱 WhatsApp + PDF</button>';
     html += '<button class="btn btn-terra" onclick="sendQuoteEmail()" style="width:100%;justify-content:center;border-radius:10px;padding:16px;margin-bottom:10px" id="btn-send-email">✉️ Invia preventivo a Vivai Cintoli</button>';
     html += '<div style="display:flex;gap:8px;margin-bottom:10px">'
       +'<button class="btn btn-ghost" onclick="generatePDF()" style="flex:1;justify-content:center;border-radius:10px;color:var(--verde);border-color:var(--verde);padding:14px">📄 PDF</button>'
@@ -1267,6 +1267,53 @@ function emailQuote() {
   var subject = encodeURIComponent('Richiesta Preventivo — Fiera Zagabria 2026');
   var body = encodeURIComponent(buildWAMsg().replace(/\*/g,''));
   window.open('mailto:vivaicintolisrl@gmail.com?subject='+subject+'&body='+body);
+}
+
+/* ── WhatsApp + PDF ── */
+function sendWAWithPDF() {
+  // 1. Generate and open PDF
+  generatePDF();
+
+  // 2. Build compact share link
+  var skuMap = {};
+  var noteMap = {};
+  Object.keys(quoteSelected).forEach(function(id) {
+    if (!quoteSelected[id]) return;
+    var p = PLANTS.find(function(x){ return x.id === id; });
+    if (!p) return;
+    skuMap[p.sku] = (quoteData[id] || {qty:1}).qty;
+    if (quoteData[id] && quoteData[id].note) noteMap[p.sku] = quoteData[id].note;
+  });
+  var payload = { k: skuMap, n: noteMap, c: {
+    name:    (document.getElementById('qname')    ||{}).value||'',
+    company: (document.getElementById('qcompany') ||{}).value||'',
+    email:   (document.getElementById('qemail')   ||{}).value||'',
+    phone:   (document.getElementById('qphone')   ||{}).value||'',
+    country: (document.getElementById('qcountry') ||{}).value||'',
+    notes:   (document.getElementById('qnotes')   ||{}).value||'',
+  }};
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  var shareUrl = location.origin + location.pathname + '?q=' + encoded + '#quote';
+
+  // 3. Build WA message with link
+  var name = (document.getElementById('qname')||{}).value||'';
+  var company = (document.getElementById('qcompany')||{}).value||'';
+  var selIds = Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]});
+  var lines = [
+    '*PREVENTIVO — Vivai Cintoli*',
+    'Fiera Zagabria 2026 — Stand B-14',
+    ''
+  ];
+  if (name) lines.push('Cliente: ' + name + (company ? ' — ' + company : ''));
+  lines.push(selIds.length + ' specie selezionate');
+  lines.push('');
+  lines.push('📄 Salva il PDF che si è aperto, poi allega qui sotto.');
+  lines.push('🔗 Preventivo completo: ' + shareUrl);
+
+  // 4. Open WhatsApp after short delay (let PDF window open first)
+  setTimeout(function() {
+    window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+  }, 800);
 }
 
 /* ── Send quote via Resend API ── */
@@ -1525,7 +1572,8 @@ function buildWAMsg(){
     var p = PLANTS.find(function(x){return x.id===id});
     if(!p) return;
     var d = quoteData[id]||{qty:1,note:''};
-    lines.push('• '+p.name+' ('+p.sci+') x'+d.qty+(d.note?' — '+d.note:''));
+    var dim = d.note ? ' ['+d.note+']' : '';
+    lines.push('• '+p.name+dim+' x'+d.qty);
   });
   lines.push('');
   var name=document.getElementById('qname');
@@ -1536,6 +1584,10 @@ function buildWAMsg(){
   if(vat&&vat.value) lines.push('P.IVA/VAT: '+vat.value);
   var email=document.getElementById('qemail');
   if(email&&email.value) lines.push('Email: '+email.value);
+  var phone=document.getElementById('qphone');
+  if(phone&&phone.value) lines.push('Tel: '+phone.value);
+  var country=document.getElementById('qcountry');
+  if(country&&country.value) lines.push('Paese: '+country.value);
   var notes=document.getElementById('qnotes');
   if(notes&&notes.value) lines.push('Note: '+notes.value);
   return lines.join('\n');
