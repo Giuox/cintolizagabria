@@ -779,6 +779,26 @@ function _expandEntry(e) {
     img:img, avail:e.q>0?'available':'soon'};
 }
 
+// Fetch Wikipedia image for plants with no catalog image
+var _wikiImgCache = {};
+function getWikiImg(sci, imgEl) {
+  if (!sci || imgEl.dataset.wikiTried) return;
+  imgEl.dataset.wikiTried = '1';
+  // Use first two words of scientific name (genus + species)
+  var query = sci.split(/[\s'(]/)[0] + '_' + (sci.split(/\s+/)[1] || '');
+  if (_wikiImgCache[query]) { imgEl.src = _wikiImgCache[query]; return; }
+  fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(query))
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      var url = d && d.thumbnail && d.thumbnail.source;
+      if (url) {
+        _wikiImgCache[query] = url;
+        imgEl.src = url;
+      }
+    })
+    .catch(function(){});
+}
+
 (function loadCatalog() {
   fetch('/catalog.json')
     .then(function(r) { if(!r.ok) throw 0; return r.json(); })
@@ -1101,7 +1121,7 @@ function renderCatalog() {
         (sizeVariants.length+1)+' dimensioni disponibili</div>'
       : '';
     card.innerHTML = '<div class="pcard-cat">'+catName+'</div>'
-      +'<div class="pcard-img"><img src="'+p.img+'" alt="'+p.name+'" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'"></div>'
+      +'<div class="pcard-img"><img src="'+p.img+'" alt="'+p.name+'" onerror="if(!this.dataset.wikiTried){getWikiImg(\''+p.sci.replace(/'/g,"\\'")+'\'  ,this)}else{this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'}"></div>'
       +'<div class="pcard-body">'
       +'<div class="pcard-name">'+p.name+'</div>'
       +'<div class="pcard-sci">'+p.sci+'</div>'
@@ -1516,21 +1536,63 @@ function renderQuoteResults() {
     return;
   }
 
+  var SIZE_RE_Q = /[\s('](vaso|cesta|secolare)/i;
   var html = '';
   filtered.forEach(function(p){
-    var isSel = quoteSelected[p.id];
-    html += '<div onclick="'+(isSel?'removeFromQuote':'addToQuote')+'(\''+p.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:'+(isSel?'#FAFDF5':'#fff')+';border:2px solid '+(isSel?'var(--verde)':'transparent')+';transition:all 0.15s;touch-action:manipulation">'
-      +'<img src="'+p.img+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'">'
-      +'<div style="flex:1;min-width:0">'
-      +'<div style="font-weight:600;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'
-      +'<div style="font-size:0.7rem;font-style:italic;color:var(--testo2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.sci+'</div>'
-      
-      +'</div>'
-      +'<div style="flex-shrink:0">'
-      +(isSel
-        ?'<div style="width:32px;height:32px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem">✓</div>'
-        :'<div style="width:32px;height:32px;border-radius:50%;border:2px solid var(--sabbia2);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--verde)">+</div>')
-      +'</div></div>';
+    // Find size children of this plant
+    var sizeChildren = PLANTS.filter(function(other){
+      if (other.id === p.id) return false;
+      if (!other.sci.startsWith(p.sci)) return false;
+      var suffix = other.sci.slice(p.sci.length);
+      return suffix.length > 0 && SIZE_RE_Q.test(suffix);
+    });
+    // Skip if this plant is itself a size child of another
+    var isChild = PLANTS.some(function(base){
+      if (base.id === p.id) return false;
+      if (!p.sci.startsWith(base.sci)) return false;
+      var suffix = p.sci.slice(base.sci.length);
+      return suffix.length > 0 && SIZE_RE_Q.test(suffix);
+    });
+    if (isChild) return;
+
+    var allSizes = [p].concat(sizeChildren);
+    var isSel = quoteSelected[p.id] || sizeChildren.some(function(c){ return quoteSelected[c.id]; });
+
+    if (allSizes.length > 1) {
+      // Show each size as a separate addable row
+      html += '<div style="background:'+(isSel?'#FAFDF5':'#fff')+';border-radius:10px;margin-bottom:6px;border:2px solid '+(isSel?'var(--verde)':'transparent')+';overflow:hidden">';
+      html += '<div style="display:flex;align-items:center;gap:12px;padding:12px 12px 8px">'
+        +'<img src="'+p.img+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="if(!this.dataset.wikiTried){getWikiImg(\''+p.sci.replace(/'/g,"\\'")+'\',this)}else{this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'}">'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-weight:600;font-size:0.85rem">'+p.name+'</div>'
+        +'<div style="font-size:0.68rem;color:var(--testo2)">'+allSizes.length+' dimensioni disponibili</div>'
+        +'</div></div>';
+      // Size rows
+      allSizes.forEach(function(v){
+        var vSel = !!quoteSelected[v.id];
+        var label = v.id === p.id ? 'Standard' : v.sci.slice(p.sci.length).replace(/^[\s(']+/,'').replace(/[)']+$/,'');
+        label = label.charAt(0).toUpperCase() + label.slice(1);
+        html += '<div onclick="'+(vSel?'removeFromQuote':'addToQuote')+'(\''+v.id+'\')" '
+          +'style="display:flex;align-items:center;gap:10px;padding:8px 12px 8px 68px;cursor:pointer;border-top:1px solid var(--sabbia);background:'+(vSel?'rgba(74,93,35,0.06)':'transparent')+';touch-action:manipulation">'
+          +'<div style="flex:1;font-size:0.8rem;color:var(--testo2)">'+label+(v.qty>0?' <span style="color:var(--verde);font-weight:600">'+v.qty+' disp.</span>':'')+'</div>'
+          +'<div style="width:28px;height:28px;border-radius:50%;'+(vSel?'background:var(--verde);':'border:2px solid var(--sabbia2);')+'display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:'+(vSel?'#fff':'var(--verde)')+';">'+(vSel?'✓':'+')+'</div>'
+          +'</div>';
+      });
+      html += '</div>';
+    } else {
+      var isSel1 = !!quoteSelected[p.id];
+      html += '<div onclick="'+(isSel1?'removeFromQuote':'addToQuote')+'(\''+p.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;margin-bottom:6px;cursor:pointer;background:'+(isSel1?'#FAFDF5':'#fff')+';border:2px solid '+(isSel1?'var(--verde)':'transparent')+';transition:all 0.15s;touch-action:manipulation">'
+        +'<img src="'+p.img+'" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="if(!this.dataset.wikiTried){getWikiImg(\''+p.sci.replace(/'/g,"\\'")+'\',this)}else{this.src=\'https://www.vivaicintoli.com/content/images/thumbs/default-image_415.png\'}">'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-weight:600;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.name+'</div>'
+        +'<div style="font-size:0.7rem;font-style:italic;color:var(--testo2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.sci+'</div>'
+        +'</div>'
+        +'<div style="flex-shrink:0">'
+        +(isSel1
+          ?'<div style="width:32px;height:32px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem">✓</div>'
+          :'<div style="width:32px;height:32px;border-radius:50%;border:2px solid var(--sabbia2);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--verde)">+</div>')
+        +'</div></div>';
+    }
   });
   container.innerHTML = html;
 }
