@@ -34,7 +34,7 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
 
 /* HERO */
 .hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;overflow:hidden;padding-top:56px}
-.hero-bg{position:absolute;inset:0;background:url('https://www.vivaicintoli.com/content/images/thumbs/0055795.jpeg') center 30%/cover;animation:hz 25s ease-in-out infinite alternate}
+.hero-bg{position:absolute;inset:0;background:url('https://www.vivaicintoli.com/content/images/thumbs/0055795.jpeg') 35% center/cover;animation:hz 25s ease-in-out infinite alternate}
 @keyframes hz{0%{transform:scale(1.05)}100%{transform:scale(1.15)}}
 .hero-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(26,46,10,0.92) 0%,rgba(26,46,10,0.4) 50%,rgba(26,46,10,0.15) 100%)}
 .hero-c{position:relative;z-index:2;padding:0 32px 80px;width:100%;max-width:800px}
@@ -180,6 +180,21 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
 .ft{background:var(--verde3);padding:20px 24px;text-align:center}
 .ft-brand{color:var(--oro);font-family:var(--font);font-size:1rem;font-weight:500}
 .ft-stand{color:rgba(255,255,255,0.4);font-size:0.7rem;margin-top:4px}
+
+/* PORTFOLIO */
+.portfolio-page{padding:32px 20px 100px}
+.portfolio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;margin-top:24px}
+.portfolio-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);transition:transform 0.3s,box-shadow 0.3s}
+.portfolio-card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.12)}
+.portfolio-card-img{height:220px;overflow:hidden;background:var(--sabbia)}
+.portfolio-card-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+.portfolio-card:hover .portfolio-card-img img{transform:scale(1.05)}
+.portfolio-card-body{padding:20px}
+.portfolio-card-title{font-family:var(--font);font-size:1.2rem;font-weight:600;color:var(--testo);margin-bottom:4px}
+.portfolio-card-sub{font-size:0.75rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--terra);margin-bottom:10px}
+.portfolio-card-desc{font-size:0.82rem;color:var(--testo2);line-height:1.6}
+@media(max-width:768px){.portfolio-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.portfolio-page{padding:20px 14px 80px}.portfolio-card-img{height:180px}}
 
 /* GARDEN VISION */
 .gv-style-card{padding:16px;background:#fff;border-radius:10px;cursor:pointer;border:2px solid transparent;transition:all 0.2s;text-align:center;touch-action:manipulation}
@@ -353,6 +368,7 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
   <div class="nav-links">
     <span class="nav-link on" onclick="go('home')">Home</span>
     <span class="nav-link" onclick="go('catalog')">Catalogo</span>
+    <span class="nav-link" onclick="go('portfolio')">Portfolio</span>
     <span class="nav-link" onclick="go('ai')">Flora</span>
     <span class="nav-link" onclick="go('quote')">Preventivo</span>
   </div>
@@ -571,6 +587,120 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
   </div>
 </div>
 
+<!-- PORTFOLIO -->
+<div id="p-portfolio" class="page">
+  <div class="portfolio-page">
+    <div class="cat-head">
+      <div class="cat-eye" id="portfolio-eye">I nostri progetti</div>
+      <h2 class="cat-title">Il nostro <em>Portfolio</em></h2>
+    </div>
+    <div class="portfolio-grid">
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/paradiso-sul-mare.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Un paradiso sul mare">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Villetta a Siracusa</div>
+          <div class="portfolio-card-title">Un paradiso sul mare</div>
+          <div class="portfolio-card-desc">Giardino costiero mediterraneo affacciato sul mare di Siracusa, con essenze resistenti alla salsedine e palme scenografiche.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/vista-incantevole.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Una vista incantevole">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Giardino privato</div>
+          <div class="portfolio-card-title">Una vista incantevole</div>
+          <div class="portfolio-card-desc">L'intervento ha riguardato l'intero spazio verde. Lussureggianti macchie di vegetazione si mescolano con il paesaggio rurale circostante.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/cuore-barocco.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Nel cuore del Barocco">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Scicli, Ragusa</div>
+          <div class="portfolio-card-title">Nel cuore del Barocco</div>
+          <div class="portfolio-card-desc">Partner dei lavori di ristrutturazione di un antico giardino nel cuore del barocco di Scicli, patrimonio UNESCO.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/villa-ulivi-carrubi.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Villa tra Ulivi e Carrubi">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Villa privata</div>
+          <div class="portfolio-card-title">Villa tra Ulivi, Carrubi e magnifiche fioriture</div>
+          <div class="portfolio-card-desc">Dalla grande passione per la botanica dei committenti nasce uno splendido giardino con aiuole morbide e variopinte e piacevoli stanze all'aperto.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/giardino-campagna.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Giardino di campagna">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Campagna iblea</div>
+          <div class="portfolio-card-title">Giardino di campagna</div>
+          <div class="portfolio-card-desc">Immerso tra i profili collinari della campagna iblea, realizzato intorno ad un antico casolare in pietra totalmente ristrutturato.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/ospitalita-siciliana.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Ospitalità siciliana">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Masseria storica</div>
+          <div class="portfolio-card-title">Ospitalità siciliana</div>
+          <div class="portfolio-card-desc">L'antica masseria di fine '800, un tempo adibita alla produzione di olive ed agrumi, completamente ridisegnata con aree verdi lussureggianti.</div>
+        </div>
+      </div>
+
+      <div class="portfolio-card">
+        <div class="portfolio-card-img">
+          <img src="https://www.vivaicintoli.com/content/images/portfolio/hotel-siciliano.jpg"
+               onerror="this.parentElement.style.background='var(--sabbia)';this.style.display='none'"
+               alt="Hotel siciliano">
+        </div>
+        <div class="portfolio-card-body">
+          <div class="portfolio-card-sub">Hotel 4 stelle, Siracusa</div>
+          <div class="portfolio-card-title">Hotel siciliano</div>
+          <div class="portfolio-card-desc">Immerso nella riserva naturale "Ciane e Saline" di Siracusa, l'hotel nasce da un'antica masseria del 1861 con giardini mediterranei rigogliosi.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-top:40px;padding:32px;background:var(--verde3);border-radius:16px">
+      <div style="font-family:var(--font);font-size:1.4rem;color:#fff;font-weight:300;margin-bottom:8px">Vuoi un giardino come questi?</div>
+      <div style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:20px">Contattaci per un preventivo personalizzato</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-terra" onclick="go('quote')">Richiedi Preventivo</button>
+        <button class="btn btn-ghost" onclick="go('ai')">Consulta Flora AI</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- QUOTE WIZARD -->
 <div id="p-quote" class="page">
   <div class="quote-page">
@@ -710,7 +840,7 @@ var TR = {
     modal_water:'Acqua',modal_light:'Luce',modal_leaf:'Foglia',modal_cold:'Resistenza freddo',
     modal_variants:'Varianti disponibili',modal_add:'Aggiungi al preventivo',
     ft_stand:'Fiera del Verde &middot; Zagabria 2026 &middot; Stand B-14 &middot; Pad. 3',
-    nav_home:'Home',nav_cat:'Catalogo',nav_ai:'Flora',nav_quote:'Preventivo',
+    nav_home:'Home',nav_cat:'Catalogo',nav_portfolio:'Portfolio',nav_ai:'Flora',nav_quote:'Preventivo',
     chat_welcome:'Ciao! Sono Flora, la tua consulente botanica. \uD83C\uDF3F Come posso aiutarti oggi?',
     chat_qr1:'Piante resistenti alla siccit\u00e0',chat_qr2:'Giardino costiero',chat_qr3:'Piante per hotel',chat_qr4:'Ulivi secolari',
   },
@@ -745,7 +875,7 @@ var TR = {
     modal_water:'Water',modal_light:'Light',modal_leaf:'Foliage',modal_cold:'Cold resistance',
     modal_variants:'Available variants',modal_add:'Add to quote',
     ft_stand:'Green Fair &middot; Zagreb 2026 &middot; Stand B-14 &middot; Hall 3',
-    nav_home:'Home',nav_cat:'Catalog',nav_ai:'Flora',nav_quote:'Quote',
+    nav_home:'Home',nav_cat:'Catalog',nav_portfolio:'Portfolio',nav_ai:'Flora',nav_quote:'Quote',
     chat_welcome:'Hello! I\'m Flora, your botanical consultant. \uD83C\uDF3F How can I help you today?',
     chat_qr1:'Drought-resistant plants',chat_qr2:'Coastal garden',chat_qr3:'Plants for hotels',chat_qr4:'Century-old olives',
   },
@@ -780,7 +910,7 @@ var TR = {
     modal_water:'Voda',modal_light:'Svjetlo',modal_leaf:'Li\u0161\u0107e',modal_cold:'Otpornost na hladno\u0107u',
     modal_variants:'Dostupne varijante',modal_add:'Dodaj u ponudu',
     ft_stand:'Sajam Zelenila &middot; Zagreb 2026 &middot; Stand B-14 &middot; Hala 3',
-    nav_home:'Po\u010detna',nav_cat:'Katalog',nav_ai:'Flora',nav_quote:'Ponuda',
+    nav_home:'Po\u010detna',nav_cat:'Katalog',nav_portfolio:'Portfolio',nav_ai:'Flora',nav_quote:'Ponuda',
     chat_welcome:'Bok! Ja sam Flora, va\u0161 botani\u010dki konzultant. \uD83C\uDF3F Kako vam mogu pomo\u0107i?',
     chat_qr1:'Biljke otporne na su\u0161u',chat_qr2:'Obalni vrt',chat_qr3:'Biljke za hotele',chat_qr4:'Stoljetne masline',
   },
@@ -815,7 +945,7 @@ var TR = {
     modal_water:'Wasser',modal_light:'Licht',modal_leaf:'Laub',modal_cold:'K\u00e4lteresistenz',
     modal_variants:'Verf\u00fcgbare Varianten',modal_add:'Zum Angebot hinzuf\u00fcgen',
     ft_stand:'Gr\u00fcnfl\u00e4chenmesse &middot; Zagreb 2026 &middot; Stand B-14 &middot; Halle 3',
-    nav_home:'Start',nav_cat:'Katalog',nav_ai:'Flora',nav_quote:'Angebot',
+    nav_home:'Start',nav_cat:'Katalog',nav_portfolio:'Portfolio',nav_ai:'Flora',nav_quote:'Angebot',
     chat_welcome:'Hallo! Ich bin Flora, Ihre botanische Beraterin. \uD83C\uDF3F Wie kann ich Ihnen helfen?',
     chat_qr1:'D\u00fcrreresistente Pflanzen',chat_qr2:'K\u00fcstengarten',chat_qr3:'Pflanzen f\u00fcr Hotels',chat_qr4:'Jahrhundertealte Oliven',
   },
@@ -883,7 +1013,7 @@ function setLang(l) {
   document.querySelector('.ft-stand').innerHTML = tr('ft_stand');
   // Nav labels
   var navLinks = document.querySelectorAll('.nav-link');
-  var navKeys = ['nav_home','nav_cat','nav_ai','nav_quote'];
+  var navKeys = ['nav_home','nav_cat','nav_portfolio','nav_ai','nav_quote'];
   navLinks.forEach(function(link,i){
     link.textContent = tr(navKeys[i]);
   });
