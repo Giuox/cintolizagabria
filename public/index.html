@@ -578,6 +578,15 @@ body{font-family:var(--body);color:var(--testo);background:var(--crema);overflow
       <div class="cat-eye">Preventivo fiera</div>
       <h2 class="cat-title">Crea il tuo <em>preventivo</em></h2>
     </div>
+    <!-- Retrieve by code -->
+    <div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:20px;border:1px solid var(--sabbia2)">
+      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--testo2);margin-bottom:8px">Hai già un codice preventivo?</div>
+      <div style="display:flex;gap:8px">
+        <input id="retrieve-code-input" class="form-input" type="text" placeholder="Es: CIN-4827" style="flex:1;border-radius:8px;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.05em">
+        <button onclick="retrieveQuote()" style="padding:10px 16px;background:var(--verde);color:#fff;border:none;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:var(--body);white-space:nowrap">Recupera</button>
+      </div>
+      <div id="retrieve-status" style="display:none;font-size:0.78rem;margin-top:8px;padding:8px;border-radius:6px"></div>
+    </div>
     <div class="steps-bar" id="steps-bar"></div>
     <div id="wiz-steps"></div>
     <div class="wiz-nav" id="wiz-nav"></div>
@@ -1215,7 +1224,13 @@ function renderQuote() {
     html += '<button class="btn btn-terra" onclick="sendQuoteEmail()" style="width:100%;justify-content:center;border-radius:10px;padding:16px;margin-bottom:10px" id="btn-send-email">✉️ Invia preventivo a Vivai Cintoli</button>';
     html += '<div style="display:flex;gap:8px;margin-bottom:10px">'
       +'<button class="btn btn-ghost" onclick="generatePDF()" style="flex:1;justify-content:center;border-radius:10px;color:var(--verde);border-color:var(--verde);padding:14px">📄 PDF</button>'
-      +'<button class="btn btn-ghost" onclick="shareQuoteLink()" style="flex:1;justify-content:center;border-radius:10px;color:var(--testo2);border-color:var(--sabbia2);padding:14px" id="btn-share">🔗 Condividi link</button>'
+      +'<button class="btn btn-ghost" onclick="saveQuoteToServer()" style="flex:1;justify-content:center;border-radius:10px;color:var(--testo2);border-color:var(--sabbia2);padding:14px" id="btn-save-server">💾 Salva</button>'
+      +'</div>';
+    html += '<div id="save-code-box" style="display:none;background:var(--sabbia);border-radius:10px;padding:16px;margin-bottom:10px;text-align:center">'
+      +'<div style="font-size:0.7rem;font-weight:600;color:var(--verde);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em">Codice preventivo</div>'
+      +'<div id="save-code-display" style="font-family:var(--font);font-size:2rem;font-weight:600;color:var(--terra);letter-spacing:0.1em;margin-bottom:8px"></div>'
+      +'<div style="font-size:0.75rem;color:var(--testo2);margin-bottom:10px">Conserva questo codice per recuperare il preventivo (valido 90 giorni)</div>'
+      +'<button onclick="copyCode()" style="padding:8px 20px;background:var(--verde);color:#fff;border:none;border-radius:6px;font-size:0.78rem;cursor:pointer;font-family:var(--body);font-weight:600" id="btn-copy-code">Copia codice</button>'
       +'</div>';
     html += '<div id="share-link-box" style="display:none;background:var(--sabbia);border-radius:10px;padding:12px;margin-bottom:10px">'
       +'<div style="font-size:0.7rem;font-weight:600;color:var(--verde);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em">Link preventivo</div>'
@@ -1312,7 +1327,137 @@ function emailQuote() {
   window.open('mailto:vivaicintolisrl@gmail.com?subject='+subject+'&body='+body);
 }
 
-/* ── WhatsApp + PDF ── */
+/* ── Save quote to server (Vercel KV) ── */
+async function saveQuoteToServer() {
+  var btn = document.getElementById('btn-save-server');
+  var box = document.getElementById('save-code-box');
+  if (!btn) return;
+
+  var selIds = Object.keys(quoteSelected).filter(function(k){return quoteSelected[k]});
+  if (!selIds.length) return;
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Salvataggio...';
+
+  var plants = selIds.map(function(id) {
+    var p = PLANTS.find(function(x){return x.id===id});
+    var d = quoteData[id]||{qty:1,note:''};
+    return { id:p.id, sku:p.sku, name:p.name, sci:p.sci, qty:d.qty, note:d.note||'', stock:p.qty };
+  });
+
+  var client = {
+    name:    (document.getElementById('qname')    ||{}).value||'',
+    company: (document.getElementById('qcompany') ||{}).value||'',
+    email:   (document.getElementById('qemail')   ||{}).value||'',
+    phone:   (document.getElementById('qphone')   ||{}).value||'',
+    country: (document.getElementById('qcountry') ||{}).value||'',
+    notes:   (document.getElementById('qnotes')   ||{}).value||'',
+  };
+
+  try {
+    var res = await fetch('/api/quote-save', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ plants, client }),
+    });
+    var data = await res.json();
+    if (res.ok && data.code) {
+      if (box) {
+        document.getElementById('save-code-display').textContent = data.code;
+        box.style.display = 'block';
+      }
+      btn.textContent = '✅ Salvato';
+    } else {
+      throw new Error(data.error || 'Errore salvataggio');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '💾 Salva';
+    alert('Errore: ' + e.message);
+  }
+}
+
+function copyCode() {
+  var code = document.getElementById('save-code-display');
+  var btn = document.getElementById('btn-copy-code');
+  if (!code) return;
+  navigator.clipboard.writeText(code.textContent).then(function() {
+    btn.textContent = '✓ Copiato!';
+    setTimeout(function(){ btn.textContent='Copia codice'; }, 2000);
+  }).catch(function() {
+    var ta = document.createElement('textarea');
+    ta.value = code.textContent;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+
+/* ── Retrieve quote by code ── */
+async function retrieveQuote() {
+  var input = document.getElementById('retrieve-code-input');
+  var status = document.getElementById('retrieve-status');
+  if (!input || !status) return;
+
+  var code = input.value.trim().toUpperCase();
+  if (!code) return;
+
+  status.style.display = 'block';
+  status.style.background = '#F5EDE0';
+  status.style.color = 'var(--testo2)';
+  status.textContent = '⏳ Recupero in corso...';
+
+  try {
+    var res = await fetch('/api/quote-save?code=' + encodeURIComponent(code));
+    var data = await res.json();
+
+    if (!res.ok) {
+      status.style.background = '#FEE2E2';
+      status.style.color = '#991B1B';
+      status.textContent = '❌ ' + (data.error || 'Codice non trovato');
+      return;
+    }
+
+    // Restore plants
+    quoteSelected = {};
+    quoteData = {};
+    if (data.plants) {
+      data.plants.forEach(function(p) {
+        // Find by id or sku
+        var found = PLANTS.find(function(x){ return x.id === p.id || x.sku === p.sku; });
+        if (!found) return;
+        quoteSelected[found.id] = true;
+        quoteData[found.id] = { qty: p.qty || 1, note: p.note || '' };
+      });
+    }
+
+    // Restore client data after wizard renders
+    var clientData = data.client || {};
+    setTimeout(function() {
+      var map = {qname:'name',qcompany:'company',qemail:'email',qphone:'phone',qcountry:'country',qnotes:'notes'};
+      Object.keys(map).forEach(function(id){
+        var el = document.getElementById(id);
+        if (el && clientData[map[id]]) el.value = clientData[map[id]];
+      });
+    }, 300);
+
+    saveQuoteToStorage();
+    status.style.background = '#D1FAE5';
+    status.style.color = '#065F46';
+    status.textContent = '✅ Preventivo recuperato!';
+    input.value = '';
+
+    // Go to summary
+    wizStep = 3;
+    renderQuote();
+
+  } catch(e) {
+    status.style.background = '#FEE2E2';
+    status.style.color = '#991B1B';
+    status.textContent = '❌ Errore di connessione';
+  }
+}
 function sendWAWithPDF() {
   // 1. Generate and open PDF
   generatePDF();
